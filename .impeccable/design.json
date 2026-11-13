@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-08T06:38:23.392711+00:00",
+  "title": "Design System: SoundTouch Radio",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Verde piloto",
+        "canonical": "#2A6F47",
+        "tonalRamp": [
+          "#00210F",
+          "#12522F",
+          "#2A6F47",
+          "#8BD5A2",
+          "#B7EFC8"
+        ]
+      },
+      "carcasa": {
+        "role": "neutral",
+        "displayName": "Carcasa",
+        "canonical": "#ECEDEB",
+        "tonalRamp": [
+          "#1B1C1E",
+          "#2D2E30",
+          "#DFE0DE",
+          "#ECEDEB",
+          "#F8F9F7"
+        ]
+      },
+      "warning": {
+        "role": "tertiary",
+        "displayName": "Ámbar de aviso",
+        "canonical": "#7A4600",
+        "tonalRamp": [
+          "#2A1700",
+          "#6A3B00",
+          "#7A4600",
+          "#FFB870",
+          "#FFDDB8"
+        ]
+      },
+      "error": {
+        "role": "error",
+        "displayName": "Rojo de fallo",
+        "canonical": "#B3261E",
+        "tonalRamp": [
+          "#410E0B",
+          "#93000A",
+          "#B3261E",
+          "#FFB4AB",
+          "#F9DEDC"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "data": {
+        "displayName": "Datos",
+        "purpose": "IP, kbps, volumen, tiempos: siempre tabular."
+      },
+      "key-number": {
+        "displayName": "Número de tecla",
+        "purpose": "Número de preset dentro de la tecla circular."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "fade-through",
+        "value": "fadeIn/fadeOut 200ms",
+        "purpose": "Cambio de pantalla; 0 ms con Quitar animaciones."
+      },
+      {
+        "name": "grille-pulse",
+        "value": "alpha 0.72–1, 1400ms, reverse",
+        "purpose": "Solo con reproducción confirmada."
+      },
+      {
+        "name": "grille-sweep",
+        "value": "fila 0→6, 1200ms lineal",
+        "purpose": "Mientras se resuelve, envía o carga."
+      }
+    ],
+    "breakpoints": []
+  },
+  "components": [
+    {
+      "name": "Tecla de preset",
+      "kind": "custom",
+      "refersTo": "preset-key-filled",
+      "description": "Tecla circular 56 dp con número tabular y nombre debajo; luz piloto si suena.",
+      "html": "<div class=\"k\"><button class=\"key\">4<i></i></button><span>Cadena SER</span></div>",
+      "css": ".k{display:inline-flex;flex-direction:column;align-items:center;font-family:Roboto,sans-serif}.key{width:56px;height:56px;border-radius:50%;border:0;background:#D9DDDF;color:#1A1C1D;font:500 16px Roboto;font-feature-settings:'tnum';position:relative}.key i{position:absolute;top:7px;left:50%;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:#2A6F47}.k span{font-size:11px;margin-top:6px;color:#1A1C1D}"
+    },
+    {
+      "name": "Luz piloto",
+      "kind": "custom",
+      "refersTo": "pilot-light",
+      "description": "Verde = confirmado; gris = apagado; ámbar = aviso; rojo = fallo.",
+      "html": "<span class=\"p on\"></span><span class=\"p\"></span>",
+      "css": ".p{display:inline-block;width:10px;height:10px;border-radius:50%;background:#C5C6C4;margin:4px}.p.on{background:#2A6F47}"
+    },
+    {
+      "name": "Stop",
+      "kind": "button",
+      "refersTo": "stop-key",
+      "description": "Acción principal del panel.",
+      "html": "<button class=\"stop\">■</button>",
+      "css": ".stop{width:56px;height:56px;border-radius:50%;border:0;background:#2A6F47;color:#fff;font-size:18px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Radio Braun",
+    "overview": "Un aparato de radio de sobremesa bien diseñado: carcasa gris fría, tinta casi negra y un único color de mando. Material 3 nativo en estructura; el mundo aporta paleta, tipografía, densidad y la rejilla de perforaciones como indicador real.",
+    "keyCharacteristics": [
+      "Un solo acento, verde piloto",
+      "Profundidad tonal, sin sombras decorativas",
+      "Cifras tabulares en todo dato",
+      "Rejilla de perforaciones como indicador de volumen y estado"
+    ],
+    "rules": [
+      {
+        "name": "Regla del piloto",
+        "body": "Verde solo cuando el altavoz confirma que suena.",
+        "section": "colors"
+      },
+      {
+        "name": "Regla de las cifras",
+        "body": "Todo número variable lleva tnum.",
+        "section": "typography"
+      }
+    ],
+    "dos": [
+      "Causa + acción en cada fallo",
+      "Borrar aislado tras separador"
+    ],
+    "donts": [
+      "Nada de perillas ni texturas",
+      "Nada de segundo acento ni gradientes",
+      "No marcar http como aviso"
+    ]
+  }
+}

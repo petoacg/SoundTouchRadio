@@ -1,0 +1,93 @@
+# Historial de versiones
+
+De la más antigua a la más reciente. Las pruebas con el altavoz real están en [COMPROBACIONES.md](COMPROBACIONES.md).
+
+- **1.5.0**: conexión con el altavoz en modo configuración **arreglada** (faltaba el permiso `CHANGE_NETWORK_STATE`; la conexión desde la app fallaba siempre). **Un solo flujo con dos puertas:** «Conectar» (aviso de Android) o conectarse en Ajustes a «Bose ST 10 (…)» y volver, la app lo detecta y sigue sola; el formulario del navegador queda como último recurso plegado. Mensajes de error exactos y en español. **Renombrar el altavoz** desde la hoja de altavoces (API oficial `/name`).
+- **1.6.0**: conexión con el altavoz **como la app de Bose**, que es el camino que funciona con el SoundTouch 10 y el Pixel 10 (capturas del usuario). «Abrir Wi-Fi» abre el panel de Wi-Fi de Android encima de la app; eliges «Bose ST 10 (…)» y respondes **Sí** a «no tiene acceso a Internet, ¿mantener la conexión?». Ese «Sí» es lo que sostiene la conexión. La app **comprueba cada 2 s durante 3 min** (antes, una sola vez al volver, casi siempre a destiempo) y sigue sola. La conexión automática (`WifiNetworkSpecifier`) pasa a opción secundaria: no muestra ese aviso y en el Pixel 10 entra en bucle en «Obteniendo dirección IP…». Mensajes de error corregidos. Al terminar, se propone un nombre para el altavoz, como hace Bose.
+- **1.6.1**: **arreglado el envío de la Wi-Fi al altavoz.** El cliente de red cortaba la lectura a los 4 s, así que el escaneo de redes del altavoz (unos 5 s) y el envío de la contraseña (el altavoz prueba tu red hasta 30 s antes de contestar) fallaban siempre. Ahora espera 25 s y 40 s. «Sin respuesta» al enviar ya no es un fallo: al probar tu red, el altavoz suele cortar la suya. La app **cierra siempre la configuración** y lo busca en tu red. **Lista de redes combinada**: la del altavoz más la que ve el móvil, con las de solo 5 GHz deshabilitadas y un botón «Actualizar». Si el altavoz no logra unirse, la app lo detecta («sigue en su propia red») y ofrece «Corregir y volver a enviar» sin repetir la conexión.
+- **1.6.2**: **configuración Wi-Fi verificada de principio a fin** con el SoundTouch 10 y el Pixel 10, sin la app de Bose. «Añadir emisora» pasa del botón flotante a la cabecera de «Emisoras», donde ya no tapa la última fila encima del panel «Ahora suena». Documentación actualizada: INFORME-WIFI y COMPROBACIONES.
+- **1.7.0**: **alarma «Una vez»** que convive con la semanal: fecha y hora concretas, con emisora y volumen propios, y se apaga sola al sonar, sin desmarcar la rutina. **Buscar emisoras** en el directorio comunitario radio-browser.info (52.462 emisoras de 224 países, consultado el 9 de noviembre de 2026), con filtros de país, género y «Solo compatibles». Se puede probar en el altavoz antes de guardar y guardar en una tecla. Solo se conecta al buscar, sin logotipos ni registro de clics. «+ Añadir» abre una hoja: buscar, escribir una URL o importar. Días del despertador más legibles.
+- **1.7.1**: **las emisoras https ya no fallan sin explicación.** El SoundTouch 10 rechaza las direcciones https («UPnP 402 No URI supplied», visto en el registro del usuario), y 50 de las 74 emisoras «compatibles» de España en el directorio solo dan https. Ahora la app prueba sola la versión http antes de enviarla, al probar, al reproducir y en el despertador. Si suena, guarda esa versión. Si no existe, lo dice: «solo emite por https». En el buscador van primero las http y las https quedan marcadas. Si la prueba falló, la app avisa antes de guardar («Guardar igualmente»). Tras Stop, el panel dice «Detenido» en vez de «Otra fuente: ninguna». El botón de la tarjeta de error ya no es verde.
+- **1.8.0**: **volumen fino para la noche.**
+  - Teclas − y + de un punto a los lados de la barra. Si las mantienes pulsadas, repiten.
+  - La barra tiene curva: el tramo bajo ocupa unas 3 veces más recorrido, y su primer cuarto cubre del 0 al 6.
+  - Vibración suave en cada punto.
+  - **Botones físicos del móvil**: con la app abierta, cada pulsación mueve un punto el altavoz. Mientras suena, una sesión multimedia «remota» lo intenta también con la pantalla bloqueada; pendiente de verificar en Android 17.
+  - Diagnóstico: etiquetas que ya no se pegan al valor y el XML de /now_playing legible.
+  - Sondeo más ligero: «¿admite pausa?» solo se pregunta cuando cambia algo.
+- **1.8.1**: **arreglado: el volumen bajaba solo hasta 0 y no paraba** (vídeo del usuario).
+  - Al mantener pulsada la tecla − hasta 0, la repetición quedaba viva y seguía restando aunque subieras el volumen.
+  - Ahora la repetición vive dentro de la pulsación: se cancela al soltar o si el gesto se interrumpe, y se para sola en 0 y en 100. Lo cubre un test con ese mismo caso.
+  - **Cifra de volumen en dos estados:** tenue mientras está pedida y normal cuando el altavoz devuelve el valor. Si devuelve otro, se muestra el suyo.
+  - **Ajustes → Volumen:** puntos por pulsación (1, 2, 3 o 5) para las teclas − / + y los botones del móvil, por si el altavoz va por escalones.
+- **1.8.2**: **la barra de volumen ya no salta.** Un toque en la pista vacía no hace nada, por ejemplo al ir a pulsar «+» de noche. Solo se mueve arrastrando su tirador, y en relativo: avanza lo que avanza el dedo. TalkBack ofrece «subir/bajar un punto» y ninguna acción para fijar un valor de golpe.
+- **1.9.0**: **diseño final, más aire.**
+  - La barra de volumen vuelve a ser larga y sin teclas − / +, y casi dobla su recorrido. Se mantienen la curva, el arrastre solo desde el tirador sin saltos y la cifra que confirma el altavoz.
+  - El panel «Ahora suena» va en dos filas. Arriba, emisora y controles (temporizador, pausa y Stop, todos de 48 dp). Abajo, el volumen solo.
+  - Filas de emisora con una sola línea secundaria («AAC · 128 kbps · dominio»).
+  - Despertador en una línea, etiquetas de preset alineadas y más separación entre el encendido y el chip del altavoz.
+  - El verde se mantiene tal como está, por decisión del usuario.
+- **1.9.1**:
+  - **Barra de volumen suave:** el tirador sigue al dedo de forma continua (antes saltaba de punto en punto, con un salto grande de 0 a 1) y, al confirmar, se desliza a su sitio.
+  - **Los dos despertadores en Radio:** la semanal y la de «una vez» aparecen a la vez, cada una en su línea. La de «una vez» lleva icono de calendario y la próxima en sonar va en color normal.
+  - **Controles en la pantalla de bloqueo y en la persiana de Android:** notificación multimedia con emisora, altavoz, pausa o continuar, y detener. Sin servicio en primer plano. Android pide una vez el permiso de notificaciones al sonar algo.
+- **1.9.2**:
+  - El estado del panel va en dos líneas («Sonando» y, debajo, «MP3 · 128 kbps»), sin cortes.
+  - Al soltar la barra, el tirador se desliza hasta su punto.
+  - Los despertadores de Radio se recalculan cada minuto.
+  - La notificación lee el estado real del altavoz tras cada botón.
+  - «12 h» y «55 min» ya no se parten en dos líneas.
+  - La hoja del temporizador mantiene «Iniciar» siempre visible.
+- **1.9.3**: **preparada para otros SoundTouch.**
+  - El asistente de la Wi-Fi ya no da por hecho un SoundTouch 10: habla de la red «Bose…» y pone ejemplos de nombres.
+  - Ayuda plegable para restablecer cada modelo, diciendo qué está verificado.
+  - Las redes de 5 GHz se juzgan por la lista del propio altavoz.
+  - Nombre propuesto al terminar según el modelo que informa el altavoz.
+  - Nueva sección «Modelos compatibles».
+- **1.9.4**: **lista para publicar.**
+  - **Textos de la interfaz en `res/values/strings.xml`** (unos 480): las pantallas, los avisos, el ViewModel, las notificaciones y la accesibilidad. Traducir la interfaz es añadir un `values-en/strings.xml`. Siguen en el código los mensajes técnicos de la capa de protocolo (errores del altavoz, de listas y del directorio), que tienen tests con su texto exacto.
+  - **Firma de publicación propia opcional:** con `keystore.properties`, el release se firma con tu clave; sin él, con la de desarrollo. Ver INSTALAR.md, apartado C.
+  - **Diagnóstico → «Copiar informe»:** texto para pedir ayuda con la MAC acortada y la IP sin su última cifra.
+- **1.9.5**: **emisoras que solo emiten por https (experimental).**
+  - Radio alHara sonó con una dirección http que su servidor redirige a https. Por eso se corrige lo que decía la app: el SoundTouch **no acepta que se le envíe** una dirección https (UPnP 402, verificado), pero quizá sí la reproduce si llega a ella por una redirección.
+  - Diagnóstico → «Emisoras que solo emiten por https» lo comprueba. El móvil le da al altavoz una dirección http propia que solo responde «302 → la https». Si suena, se activa el **puente de redirección**: el audio va de la emisora al altavoz y el móvil solo interviene al arrancar.
+  - Diagnóstico muestra «El altavoz reproduce» y el XML con un atributo por línea.
+  - Editor de emisora: aviso de https neutro y botón «Probar en el altavoz».
+- **1.9.6**: **emisoras solo https, verificado con un SoundTouch 10** (12 de noviembre de 2026).
+  - El altavoz rechaza una dirección https enviada directamente, pero sigue una redirección a https. Lo demuestran dos casos: la dirección http de Radio alHara, que su servidor redirige a https, y el puente del móvil. Las dos siguen sonando tras forzar el cierre de la app.
+  - **El puente deja de ser experimental:** viene activado por defecto y se puede desactivar en Ajustes.
+  - Al guardar una emisora https, se guarda su versión http si responde.
+  - Si una emisora solo https falla con el puente desactivado, el aviso ofrece «Activar el puente y reintentar».
+  - Las peticiones del altavoz al puente aparecen en Diagnóstico como «PUENTE», y el puente lee las cabeceras completas antes de responder.
+- **1.10.0**: **«Este móvil»: la radio también en el teléfono.**
+  - En el chip de arriba («Dónde suena») se elige el SoundTouch o **Este móvil**. Con el móvil, la radio sale por donde Android tenga el sonido: el altavoz del teléfono, unos auriculares o un altavoz Bluetooth como los Edifier R1855DB, que se emparejan en Ajustes de Android.
+  - Si cambias de destino con algo sonando, sigue en el nuevo.
+  - En el móvil suenan también las emisoras https y HLS.
+  - Pausa siempre disponible, notificación y pantalla de bloqueo de Android, y pausa automática si se desconecta la salida.
+  - El panel avisa si se usan datos móviles. El temporizador funciona también en el móvil; el despertador sigue solo en el SoundTouch.
+  - Reproductor: Media3 ExoPlayer (código abierto, sin Google Play Services).
+- **1.10.1**:
+  - **«Este móvil» sigue redirecciones de http a https** (Radio alHara no sonaba). Además, el móvil abre directamente la dirección final que encontró la comprobación del stream. El puente https no hace falta en el móvil: solo existe por la limitación del SoundTouch.
+  - Si algo falla en el móvil, la tarjeta dice el motivo en palabras, con su código técnico.
+  - Diagnóstico muestra primero una ficha «Este móvil» (salida, estado, dirección, formato, error) y deja la del SoundTouch plegada.
+- **1.10.2**:
+  - **Ecualizador «Sonido» para «Este móvil»:** cuatro ajustes de un toque (Neutro, Voz, Más graves, Noche) y un ajuste fino con deslizadores verticales. Usa las bandas que ofrece el móvil. Guarda un ajuste para cada salida (Edifier, auriculares, altavoz del teléfono). No afecta al SoundTouch.
+  - **Despertador sin emisora:** la línea lo dice en ámbar («sin emisora: toca para elegir una»). Al borrar una emisora que usaba un despertador, este pasa a la primera tecla con emisora y se avisa.
+  - Con «Este móvil», la línea del despertador indica en qué altavoz sonará.
+- **1.10.3**:
+  - Ajustes de sonido con nombres de una palabra (Neutro · Voz · Graves · Noche) y ✓ en el activo; antes «Más graves» se cortaba.
+  - **«Mío»** guarda tu ajuste fino aparte: puedes probar otro ajuste y volver sin perderlo.
+  - Nombre de la salida legible: «EDIFIER R1855DB» se muestra «Edifier R1855DB».
+- **1.4.1**: asistente de Wi-Fi reforzado: permiso «Dispositivos cercanos» denegado explicado en español con acceso a los ajustes de la app; «Red sin contraseña» para redes ocultas abiertas; confirmación al salir durante la espera; cuenta atrás anunciada a TalkBack cada 10 s.
+- **1.4.0**: **configurar la Wi-Fi del altavoz desde la app**, sin la app de Bose: asistente de 5 pasos (modo configuración → conectar con la red del altavoz → elegir tu red entre las que ve el altavoz → enviar y esperar → encontrarlo por su identificador y vincular). Modo AP por HTTP (`192.0.2.1:8090`, `performWirelessSiteSurvey`, `addWirelessProfile` con reintento, `SETUP_WIFI_LEAVE`); la contraseña nunca se registra.
+- **1.3.1**: pulido del despertador: la barra superior se tiñe al desplazar (como en Radio) y la línea de días solo aparece cuando no hay ninguno marcado.
+- **1.3.0**: **despertador** (hora, días, emisora, volumen y subida gradual; enciende el altavoz con la lógica segura, confirma que suena y, si falla, suena una alarma en el móvil con el motivo; alarma exacta del sistema, se reprograma tras reiniciar o cambiar la hora); botón ⏻ con nombre y estado para TalkBack; presets cortados entre palabras sin guiones; minutos del temporizador en selector segmentado; datos técnicos compactos («MP3 128k»).
+- **1.2.0**: **botón de encendido/apagado** seguro en la barra superior (lee el estado, pulsa POWER solo si hace falta y confirma; verde = encendido confirmado); las hojas inferiores se abren completas y respetan la barra de navegación de Android (el botón «Iniciar» ya no queda tapado); separación real entre las etiquetas de los presets.
+- **1.1.0**: **temporizador de apagado** (15–90 min, bajada gradual del volumen, restaura el volumen y pasa a reposo; servicio en primer plano con notificación y «Cancelar»); **vista de dos paneles** en horizontal y pantallas anchas; texto de error plegable; **R8 en release** (1,6 MB frente a 17,7 MB del debug).
+- **1.0.3**: pulido de la auditoría: avisos visibles en todas las pantallas, confirmación al descartar cambios, estados accesibles, presets sin palabras partidas (3 columnas con fuente grande), teclado centrado en horizontal, rejilla sin recomposición por fotograma, escrituras a disco fuera del hilo principal.
+- **1.0.2**: corrige la dirección sin «http://» al hablar con la API 8090.
+- **1.0.1**: quita `ACCESS_LOCAL_NETWORK` del manifiesto (bloqueaba la red local en Android 17); errores técnicos visibles en la vinculación.
+- **1.11.0**: **la app, en español e inglés.**
+  - Los 630 textos de la interfaz están traducidos al inglés: pantallas, avisos, diagnóstico, notificaciones y despertador (fechas, días y «dentro de…»).
+  - Sigue el idioma del móvil. En Android 13 o posterior, Ajustes → **Idioma** permite elegir «Como el móvil», Español o English sin cambiar el idioma del teléfono. También aparece en Ajustes de Android → Aplicaciones → SoundTouch Radio → Idioma.
+  - Arreglado: dos textos perdían el espacio inicial o final al encadenarse («· 128 kbps» y un aviso de la conexión automática).

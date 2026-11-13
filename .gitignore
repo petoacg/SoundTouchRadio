@@ -1,0 +1,17 @@
+.gradle/
+build/
+local.properties
+.idea/
+*.iml
+.kotlin/
+captures/
+.impeccable/questions/
+.impeccable/mocks/
+.impeccable/review/
+.impeccable/config.local.json
+dist/
+# Firma de publicación: nunca al repositorio.
+keystore.properties
+*.jks
+*.keystore
+# Documentación de desarrollo con Impeccable: estado local

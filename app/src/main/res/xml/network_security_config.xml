@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- El altavoz solo habla HTTP en la LAN y la mayoría de streams compatibles son http://.
+     Por eso se permite tráfico en claro. No hay ningún otro servidor al que la app se conecte. -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>
