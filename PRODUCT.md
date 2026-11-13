@@ -25,7 +25,7 @@ Cliente local y honesto: el altavoz descarga el stream directamente (el móvil p
 ## Operating Context
 
 - Altavoz y móvil en la misma Wi-Fi doméstica (subred común, sin aislamiento de clientes: pendiente de confirmar por el usuario).
-- Altavoz de referencia: Bose SoundTouch 10 (el único verificado). Desde la 1.9.3 la app no asume ese modelo: cualquier SoundTouch con la API local debería servir; ver «Modelos compatibles» en README.md. Móvil: Google Pixel 10 con la última versión de Android (Android 17 a noviembre de 2026).
+- Altavoz de referencia: Bose SoundTouch 10 (el único verificado). Desde la 1.9.3 la app no asume ese modelo: cualquier SoundTouch con la API local debería servir; ver «Modelos compatibles» en README.es.md. Móvil: Google Pixel 10 con la última versión de Android (Android 17 a noviembre de 2026).
 - Uso típico: abrir, tocar una emisora, ajustar volumen, cerrar. Uso ocasional: dar de alta emisoras, importar/exportar, diagnosticar por qué un stream no suena.
 
 ## Capabilities and Constraints

@@ -29,7 +29,7 @@ Antes de empezar: Pixel y altavoz en la misma Wi-Fi; app instalada; altavoz ence
 
 ## Formatos y URLs (banco de pruebas)
 - [ ] **17. https frente a http.** Prueba la misma emisora en https y en http (por ejemplo `https://playerservices.streamtheworld.com/api/livestream-redirect/CADENASER.mp3`). Esperado según la comunidad: https falla y http suena. Anota el resultado real.
-- [ ] **18. Formatos.** Prueba una URL de cada tipo y rellena la tabla de README.md: MP3, AAC/HE-AAC, OGG/Vorbis, FLAC, HLS (.m3u8), WMA.
+- [ ] **18. Formatos.** Prueba una URL de cada tipo y rellena la tabla de README.es.md: MP3, AAC/HE-AAC, OGG/Vorbis, FLAC, HLS (.m3u8), WMA.
 - [ ] **19. Listas .pls y .m3u.** Añade una emisora con URL .pls y otra .m3u: suenan (el móvil las resuelve).
 - [ ] **20. Botón «Probar versión http»** en una emisora https que falle: cambia la URL y suena.
 
