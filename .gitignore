@@ -15,3 +15,8 @@ keystore.properties
 *.jks
 *.keystore
 # Documentación de desarrollo con Impeccable: estado local
+
+# Binarios y restos del Finder: la APK va en Releases.
+*.apk
+*.idsig
+.DS_Store
