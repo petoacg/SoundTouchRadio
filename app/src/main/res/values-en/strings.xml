@@ -631,4 +631,7 @@
     <string name="ui_vinculado_etiqueta">linked</string>
     <string name="ui_idioma">Language</string>
     <string name="ui_idioma_sistema">Same as phone</string>
+    <string name="ui_aspecto">Appearance</string>
+    <string name="ui_idioma_ahora">Now: %1$s</string>
+    <string name="ui_restaurar_detalle">Adds back any built-in stations you deleted. Your own stations stay as they are.</string>
 </resources>

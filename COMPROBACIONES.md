@@ -130,7 +130,7 @@ Para quien use la app con un modelo distinto del SoundTouch 10. Anota modelo y f
 - [ ] **79.** Borra la emisora que usa el despertador: el aviso dice a cuál pasa, y la línea de Radio la muestra.
 
 ## Idioma (1.11.0)
-- [ ] **80.** Ajustes → Idioma → English: la app se redibuja en inglés al momento (Radio, Despertador, Diagnóstico). La notificación de reproducción también sale en inglés.
+- [ ] **80.** Ajustes → Aspecto → Idioma → English (lista con círculos; «Como el móvil» se lee entero): la app se redibuja en inglés al momento (Radio, Despertador, Diagnóstico). La notificación de reproducción también sale en inglés.
 - [ ] **81.** Despertador en inglés: la línea dice, por ejemplo, «Rings on Monday at 7:30 (in 3 days)».
 - [ ] **82.** «Como el móvil»: vuelve al idioma del teléfono. En Ajustes de Android → Aplicaciones → SoundTouch Radio aparece también «Idioma».
 

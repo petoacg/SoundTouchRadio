@@ -642,4 +642,7 @@
     <string name="ui_vinculado_etiqueta">vinculado</string>
     <string name="ui_idioma">Idioma</string>
     <string name="ui_idioma_sistema">Como el móvil</string>
+    <string name="ui_aspecto">Aspecto</string>
+    <string name="ui_idioma_ahora">Ahora: %1$s</string>
+    <string name="ui_restaurar_detalle">Vuelve a añadir las emisoras de serie que hayas borrado. Las tuyas no cambian.</string>
 </resources>

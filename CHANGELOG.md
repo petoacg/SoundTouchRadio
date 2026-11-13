@@ -91,3 +91,6 @@ De la más antigua a la más reciente. Las pruebas con el altavoz real están en
   - Los 630 textos de la interfaz están traducidos al inglés: pantallas, avisos, diagnóstico, notificaciones y despertador (fechas, días y «dentro de…»).
   - Sigue el idioma del móvil. En Android 13 o posterior, Ajustes → **Idioma** permite elegir «Como el móvil», Español o English sin cambiar el idioma del teléfono. También aparece en Ajustes de Android → Aplicaciones → SoundTouch Radio → Idioma.
   - Arreglado: dos textos perdían el espacio inicial o final al encadenarse («· 128 kbps» y un aviso de la conexión automática).
+- **1.11.1**: **Ajustes más ordenados** (auditoría de la captura del usuario).
+  - El idioma se elige en una lista con círculos, una opción por línea, como en los ajustes de Android. Antes, la fila de botones cortaba «Como el móvil» en «Como el». Debajo de «Como el móvil» se indica qué idioma está usando la app.
+  - Secciones nuevas: **Aspecto** (colores e idioma), **Reproducción** (emisoras https y multiroom, lo experimental al final) y **Emisoras** (restaurar las precargadas, con una línea que explica que no toca las tuyas). Antes ese botón aparecía bajo «Volumen».
