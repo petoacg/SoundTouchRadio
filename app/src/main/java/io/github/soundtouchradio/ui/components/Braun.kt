@@ -73,7 +73,8 @@ fun rememberReduceMotion(): Boolean {
     }
 }
 
-enum class GrilleMode { IDLE, PLAYING, LOADING, ERROR }
+/** STANDBY (1.13.0): altavoz listo pero sin sonar; puntos en ámbar tenue, quietos. IDLE: sin altavoz. */
+enum class GrilleMode { IDLE, STANDBY, PLAYING, LOADING, ERROR }
 
 /**
  * Gesto propio: la rejilla de perforaciones del altavoz como indicador real.
@@ -83,6 +84,7 @@ enum class GrilleMode { IDLE, PLAYING, LOADING, ERROR }
 @Composable
 fun SpeakerGrille(volume: Int?, mode: GrilleMode, description: String, modifier: Modifier = Modifier, size: Dp = 64.dp) {
     val cs = MaterialTheme.colorScheme
+    val standby = standbyColor()
     val reduce = rememberReduceMotion()
     val transition = rememberInfiniteTransition(label = "grille")
     // Los State de la animación se leen dentro del Canvas (fase de dibujo): solo se redibuja, no se recompone.
@@ -108,6 +110,7 @@ fun SpeakerGrille(volume: Int?, mode: GrilleMode, description: String, modifier:
                 GrilleMode.PLAYING -> if (on) cs.primary.copy(alpha = pulse) else cs.outlineVariant
                 GrilleMode.LOADING -> if (sweepRow) cs.primary.copy(alpha = 0.7f) else cs.outlineVariant
                 GrilleMode.ERROR -> cs.outlineVariant
+                GrilleMode.STANDBY -> if (on) standby else cs.outlineVariant
                 GrilleMode.IDLE -> if (on) cs.onSurfaceVariant.copy(alpha = 0.55f) else cs.outlineVariant
             }
             drawCircle(color, r, center)
@@ -118,7 +121,11 @@ fun SpeakerGrille(volume: Int?, mode: GrilleMode, description: String, modifier:
 
 private const val N = 6
 
-/** Tecla de preset estilo aparato: circular, número tabular, nombre corto debajo. */
+/**
+ * Tecla de memoria (1.13.0): circular, como los mandos de una mesa de sonido, con el número en lectura (Plex Mono).
+ * Asignada: tonal. Libre: contorno de 1 dp y sin etiqueta. Sonando: corona de 11 segmentos alrededor que marca el
+ * volumen real del altavoz, como el anillo de LED de un potenciómetro. Las demás teclas reservan el mismo hueco.
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PresetKey(
@@ -128,6 +135,8 @@ fun PresetKey(
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     modifier: Modifier = Modifier,
+    /** Volumen 0–100 para la corona; solo se dibuja en la tecla que suena. */
+    level: Int? = null,
 ) {
     val cs = MaterialTheme.colorScheme
     val filled = label != null
@@ -137,40 +146,64 @@ fun PresetKey(
         modifier.semantics(mergeDescendants = true) { contentDescription = desc },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Box(
-            Modifier
-                .size(56.dp)
-                .clip(CircleShape)
-                .then(if (filled) Modifier.background(cs.secondaryContainer) else Modifier.border(1.dp, cs.outline, CircleShape))
-                .combinedClickable(role = Role.Button, onClick = onClick, onLongClick = onLongClick, onLongClickLabel = Txt.s(R.string.ui_cambiar_preset)),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(
-                "$number",
-                style = MaterialTheme.typography.titleMedium.merge(Tabular),
-                color = if (filled) cs.onSecondaryContainer else cs.onSurfaceVariant,
-            )
-            if (playing) PilotLight(Pilot.ON, Modifier.align(Alignment.TopCenter).padding(top = 7.dp), size = 7.dp)
+        Box(Modifier.size(70.dp), contentAlignment = Alignment.Center) {
+            if (playing) SegmentRing(level ?: 0, Modifier.size(70.dp))
+            Box(
+                Modifier
+                    .size(54.dp)
+                    .clip(CircleShape)
+                    .then(if (filled) Modifier.background(cs.secondaryContainer) else Modifier.border(1.dp, cs.outline, CircleShape))
+                    .combinedClickable(role = Role.Button, onClick = onClick, onLongClick = onLongClick, onLongClickLabel = Txt.s(R.string.ui_cambiar_preset)),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    "$number",
+                    style = MaterialTheme.typography.titleMedium.merge(io.github.soundtouchradio.ui.theme.Readout),
+                    color = if (filled) cs.onSecondaryContainer else cs.onSurfaceVariant,
+                )
+            }
         }
-        Spacer(Modifier.height(6.dp))
+        Spacer(Modifier.height(2.dp))
         Text(
-            label ?: "—",
+            // Libre: sin etiqueta. El contorno ya dice «libre»; la descripción accesible explica cómo asignarla.
+            label ?: "",
             color = if (filled) cs.onSurface else cs.onSurfaceVariant,
             // Siempre dos líneas reservadas: las teclas de la fila siguiente quedan alineadas (1.9.0).
             maxLines = 2, minLines = 2, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center,
             lineHeight = MaterialTheme.typography.labelSmall.fontSize * 1.15f,
             // Corte equilibrado entre palabras («RNE / Radio 5») y nunca con guion dentro de una palabra.
             style = MaterialTheme.typography.labelSmall.copy(lineBreak = LineBreak.Heading, hyphens = Hyphens.None),
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 6.dp),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp),
         )
     }
 }
 
+/**
+ * Rótulo de panel (1.12.0): como la serigrafía que delimita zonas en el frontal de un equipo. Mayúsculas espaciadas
+ * en tinta atenuada y una línea de 1 dp hasta el borde (o hasta la acción de la sección, si la hay).
+ */
 @Composable
-fun SectionTitle(text: String, modifier: Modifier = Modifier) {
-    Text(text, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = modifier.semantics { heading() }.padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 8.dp))
+fun PanelLabel(text: String, modifier: Modifier = Modifier, action: (@Composable () -> Unit)? = null) {
+    val cs = MaterialTheme.colorScheme
+    androidx.compose.foundation.layout.Row(
+        modifier.fillMaxWidth().padding(start = 16.dp, end = if (action == null) 16.dp else 8.dp, top = 20.dp, bottom = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text.uppercase(java.util.Locale.ROOT),
+            style = MaterialTheme.typography.labelMedium.copy(letterSpacing = androidx.compose.ui.unit.TextUnit(0.14f, androidx.compose.ui.unit.TextUnitType.Em)),
+            color = cs.onSurfaceVariant,
+            modifier = Modifier.semantics { heading() },
+        )
+        Spacer(Modifier.width(12.dp))
+        Box(Modifier.weight(1f).height(1.dp).background(cs.outlineVariant))
+        if (action != null) { Spacer(Modifier.width(4.dp)); action() }
+    }
 }
+
+/** Encabezado de sección (1.13.0): en toda la app, el rótulo de panel en mayúsculas con su línea hasta el borde. */
+@Composable
+fun SectionTitle(text: String, modifier: Modifier = Modifier) = PanelLabel(text, modifier)
 
 
 

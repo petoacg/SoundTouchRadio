@@ -645,4 +645,22 @@
     <string name="ui_aspecto">Aspecto</string>
     <string name="ui_idioma_ahora">Ahora: %1$s</string>
     <string name="ui_restaurar_detalle">Vuelve a añadir las emisoras de serie que hayas borrado. Las tuyas no cambian.</string>
+    <string name="ui_piloto_aire">AIRE</string>
+    <string name="ui_piloto_espera">ESPERA</string>
+    <string name="ui_piloto_datos">DATOS</string>
+    <string name="ui_tecla_activa">activada</string>
+    <string name="ui_tecla_mute">MUTE</string>
+    <string name="ui_tecla_sleep">SLEEP</string>
+    <string name="ui_tecla_eq">EQ</string>
+    <string name="ui_tag_alarma">ALARMA</string>
+    <string name="ui_tag_una_vez">1 VEZ</string>
+    <string name="ui_tag_dir">DIR</string>
+    <string name="ui_tag_archivo">ARCH</string>
+    <string name="ui_tecla_nombre">NOMBRE</string>
+    <string name="ui_tecla_scan">SCAN</string>
+    <string name="ui_tecla_diag">DIAG</string>
+    <string name="ui_tecla_ver">VER</string>
+    <string name="ui_tecla_ocultar">OCULT.</string>
+    <string name="ui_desplegado">desplegado</string>
+    <string name="ui_plegado">plegado</string>
 </resources>

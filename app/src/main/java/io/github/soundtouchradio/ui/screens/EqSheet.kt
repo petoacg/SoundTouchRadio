@@ -16,7 +16,7 @@ import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import io.github.soundtouchradio.ui.components.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -76,15 +76,13 @@ internal fun EqContent(output: String, setting: EqSetting, bands: PhonePlayer.Eq
             SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
                 options.forEachIndexed { i, p ->
                     SegmentedButton(selected = setting.preset == p, onClick = { onChange(setting.copy(preset = p)) },
-                        shape = SegmentedButtonDefaults.itemShape(i, options.size),
-                        icon = { SegmentedButtonDefaults.Icon(active = setting.preset == p) }) {
+                        shape = SegmentedButtonDefaults.itemShape(i, options.size, baseShape = io.github.soundtouchradio.ui.components.KeyShape),
+                        icon = { if (setting.preset == p) io.github.soundtouchradio.ui.components.SelectedPilot() }) {
                         Text(stringResource(labels.getValue(p)), maxLines = 1, softWrap = false, style = MaterialTheme.typography.labelMedium)
                     }
                 }
             }
-            TextButton(onClick = { fine = !fine }) {
-                Text(stringResource(if (fine) R.string.ui_eq_ocultar_fino else R.string.ui_eq_fino))
-            }
+            io.github.soundtouchradio.ui.components.Disclosure(stringResource(R.string.ui_eq_fino), fine, { fine = !fine })
             if (fine) {
                 // Los deslizadores muestran el ajuste activo; al moverlos, se parte de él y pasa a «Mío».
                 val current = EqPlan.levels(setting, bands.centersHz, bands.minMb, bands.maxMb)
@@ -94,14 +92,15 @@ internal fun EqContent(output: String, setting: EqSetting, bands: PhonePlayer.Eq
                         val dbText = if (Math.round(db) == 0) "0 dB" else "%+.0f dB".format(db)
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(dbText, style = MaterialTheme.typography.labelMedium.merge(Tabular), color = cs.onSurfaceVariant)
-                            Slider(
+                            // Fader vertical de mesa (1.13.0): capuchón con su línea índice, carril y escala con el 0 dB marcado.
+                            io.github.soundtouchradio.ui.components.FaderSlider(
                                 value = current[i].toFloat(), valueRange = bands.minMb.toFloat()..bands.maxMb.toFloat(),
                                 onValueChange = { v ->
                                     val next = current.toMutableList().also { it[i] = (v / 100f).roundToInt() * 100 }
                                     onChange(EqSetting(EqPlan.PERSONAL, next))   // el nuevo «Mío» sustituye al anterior
                                 },
-                                colors = SliderDefaults.colors(thumbColor = cs.onSurface, activeTrackColor = cs.onSurfaceVariant, inactiveTrackColor = cs.surfaceContainerHighest),
-                                modifier = Modifier.vertical().width(160.dp).height(48.dp)
+                                accent = false, tickCount = 6, centerMajor = true,
+                                modifier = Modifier.vertical().width(160.dp).height(56.dp)
                                     .semantics { contentDescription = EqPlan.bandLabel(hz); stateDescription = dbText },
                             )
                             Text(EqPlan.bandLabel(hz), style = MaterialTheme.typography.labelSmall.merge(Tabular), color = cs.onSurfaceVariant)

@@ -38,22 +38,22 @@ import androidx.compose.material.icons.filled.SignalWifiStatusbarConnectedNoInte
 import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.Button
+import io.github.soundtouchradio.ui.components.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
+import io.github.soundtouchradio.ui.components.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.RadioButton
+import io.github.soundtouchradio.ui.components.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import io.github.soundtouchradio.ui.components.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -108,8 +108,8 @@ fun WifiSetupScreen(vm: AppViewModel, snackbar: SnackbarHostState, onBack: () ->
         onDismissRequest = { confirmLeave = false },
         title = { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_salir_del_asistente)) },
         text = { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_el_altavoz_seguira_uniendose_a)) },
-        confirmButton = { TextButton(onClick = { confirmLeave = false; exit() }) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_salir)) } },
-        dismissButton = { TextButton(onClick = { confirmLeave = false }) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_seguir_esperando)) } },
+        confirmButton = { TextButton(onClick = { confirmLeave = false; exit() }) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_salir)).uppercase()) } },
+        dismissButton = { TextButton(onClick = { confirmLeave = false }) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_seguir_esperando)).uppercase()) } },
     )
     val ctx = LocalContext.current
     // Paso 3: la lista incluye las redes que ve el móvil. Para leerlas, Android pide «Dispositivos cercanos» (una vez).
@@ -186,18 +186,18 @@ internal fun WifiSetupContent(
                         if (atConnect) {
                             // Misma jerarquía que la entrada: el panel de Wi-Fi primero, la conexión automática detrás.
                             JoinSteps()
-                            Button(onClick = onOpenWifi, modifier = Modifier.fillMaxWidth()) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_abrir_wi_fi)) }
-                            if (inAppConnect) TextButton(onClick = onAuto) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_probar_conexion_automatica)) }
+                            Button(onClick = onOpenWifi, modifier = Modifier.fillMaxWidth()) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_abrir_wi_fi)).uppercase()) }
+                            if (inAppConnect) TextButton(onClick = onAuto) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_probar_conexion_automatica)).uppercase()) }
                             if (ui.permissionDenied) TextButton(onClick = {
                                 ctx.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, android.net.Uri.parse("package:${ctx.packageName}")))
-                            }) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_conceder_el_permiso_en_los)) }
+                            }) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_conceder_el_permiso_en_los)).uppercase()) }
                         } else {
                             // Fallo al enviar, o el altavoz sigue en su red: corregir sin repetir la conexión.
                             val canResend = ui.steps.getOrNull(3)?.state == io.github.soundtouchradio.discovery.StepState.FAILED || ui.stillInSetup
                             if (canResend) Button(onClick = onBackToChoose, modifier = Modifier.fillMaxWidth()) {
-                                Text(if (ui.stillInSetup) Txt.s(R.string.ui_corregir_y_volver_a_enviar) else Txt.s(R.string.ui_volver_a_enviar))
+                                Text((if (ui.stillInSetup) Txt.s(R.string.ui_corregir_y_volver_a_enviar) else Txt.s(R.string.ui_volver_a_enviar)).uppercase())
                             }
-                            OutlinedButton(onClick = onRetry, modifier = if (canResend) Modifier.fillMaxWidth() else Modifier) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_empezar_de_nuevo)) }
+                            OutlinedButton(onClick = onRetry, modifier = if (canResend) Modifier.fillMaxWidth() else Modifier) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_empezar_de_nuevo)).uppercase()) }
                         }
                     }
                 }
@@ -216,9 +216,8 @@ private fun LastResort() {
     val cs = MaterialTheme.colorScheme
     Column {
             var lastResort by rememberSaveable { mutableStateOf(false) }
-            TextButton(onClick = { lastResort = !lastResort }, modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp)) {
-                Text(if (lastResort) Txt.s(R.string.ui_ocultar_el_ultimo_recurso) else Txt.s(R.string.ui_si_nada_de_esto_funciona))
-            }
+            io.github.soundtouchradio.ui.components.Disclosure(Txt.s(R.string.ui_si_nada_de_esto_funciona), lastResort, { lastResort = !lastResort },
+                Modifier.padding(horizontal = 16.dp, vertical = 16.dp))
             if (lastResort) Text(
                 Txt.s(R.string.ui_con_el_movil_conectado_a) +
                     Txt.s(R.string.ui_despues_vuelve_aqui_y_usa),
@@ -239,8 +238,8 @@ private fun Intro(inAppConnect: Boolean, onOpenWifi: () -> Unit, onAuto: () -> U
         Spacer(Modifier.size(8.dp))
         Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_conecta_el_movil_a_la), style = MaterialTheme.typography.titleMedium)
         JoinSteps()
-        Button(onClick = onOpenWifi, modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_abrir_wi_fi_2)) }
-        if (inAppConnect) TextButton(onClick = onAuto) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_probar_conexion_automatica_2)) }
+        Button(onClick = onOpenWifi, modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_abrir_wi_fi_2)).uppercase()) }
+        if (inAppConnect) TextButton(onClick = onAuto) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_probar_conexion_automatica_2)).uppercase()) }
     }
 }
 
@@ -253,11 +252,11 @@ private fun JoinSteps() {
     val cs = MaterialTheme.colorScheme
     val strong = SpanStyle(fontWeight = FontWeight.SemiBold, color = cs.onSurface)
     val steps: List<Pair<ImageVector?, AnnotatedString>> = listOf(
-        Icons.Filled.Wifi to buildAnnotatedString {
+        null to buildAnnotatedString {
             append(Txt.s(R.string.ui_toca_abrir_wi_fi_y)); withStyle(strong) { append(Txt.s(R.string.ui_bose)) }
             append(Txt.s(R.string.ui_por_ejemplo_bose_st_10))
         },
-        Icons.Filled.SignalWifiStatusbarConnectedNoInternet4 to buildAnnotatedString {
+        null to buildAnnotatedString {
             append(Txt.s(R.string.ui_android_avisara_de_que_la))
             withStyle(strong) { append(Txt.s(R.string.ui_si)) }; append(Txt.s(R.string.ui_para_mantener_la_conexion))
         },
@@ -291,8 +290,8 @@ private fun Watching(ui: WifiSetupUi, inAppConnect: Boolean, onOpenWifi: () -> U
             Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_esperando_a_la_red_del), style = MaterialTheme.typography.bodyLarge)
         }
         JoinSteps()
-        OutlinedButton(onClick = onOpenWifi, modifier = Modifier.fillMaxWidth()) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_abrir_wi_fi_otra_vez)) }
-        if (inAppConnect) TextButton(onClick = onAuto) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_probar_conexion_automatica_3)) }
+        OutlinedButton(onClick = onOpenWifi, modifier = Modifier.fillMaxWidth()) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_abrir_wi_fi_otra_vez)).uppercase()) }
+        if (inAppConnect) TextButton(onClick = onAuto) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_probar_conexion_automatica_3)).uppercase()) }
     }
 }
 
@@ -316,7 +315,7 @@ private fun Done(ui: WifiSetupUi, onUse: (String?) -> Unit) {
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
         )
         Button(onClick = { onUse(name.takeIf { it.isNotBlank() }) }, enabled = error == null, modifier = Modifier.fillMaxWidth()) {
-            Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_usar_este_altavoz_2))
+            Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_usar_este_altavoz_2)).uppercase())
         }
     }
 }
@@ -329,9 +328,8 @@ private fun Done(ui: WifiSetupUi, onUse: (String?) -> Unit) {
 private fun ResetByModel() {
     val cs = MaterialTheme.colorScheme
     var open by rememberSaveable { mutableStateOf(false) }
-    TextButton(onClick = { open = !open }, contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 0.dp)) {
-        Text(if (open) Txt.s(R.string.ui_ocultar_como_se_restablece) else Txt.s(R.string.ui_como_se_restablece_mi_modelo))
-    }
+    io.github.soundtouchradio.ui.components.Disclosure(Txt.s(R.string.ui_como_se_restablece_mi_modelo), open, { open = !open },
+        Modifier.padding(vertical = 4.dp))
     if (open) Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         listOf(
             Txt.s(R.string.ui_soundtouch_10) to Txt.s(R.string.ui_manten_pulsados_preset_1_y),
@@ -398,7 +396,7 @@ private fun ChooseNetwork(ui: WifiSetupUi, onSend: (String, String) -> Unit, onR
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(end = 8.dp)) {
             Column(Modifier.weight(1f)) { SectionTitle(Txt.s(R.string.ui_redes_wi_fi)) }
             if (ui.refreshing) SpeakerGrille(null, GrilleMode.LOADING, Txt.s(R.string.ui_buscando_redes), size = 24.dp)
-            else TextButton(onClick = onRefresh) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_actualizar)) }
+            else TextButton(onClick = onRefresh) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_actualizar)).uppercase()) }
         }
         Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_si_android_aun_pregunta_si),
             style = MaterialTheme.typography.bodySmall, color = cs.onSurfaceVariant, modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp))
@@ -437,7 +435,7 @@ private fun ChooseNetwork(ui: WifiSetupUi, onSend: (String, String) -> Unit, onR
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_red_sin_contrasena), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
-                androidx.compose.material3.Switch(checked = manualOpen, onCheckedChange = null)
+                io.github.soundtouchradio.ui.components.Switch(checked = manualOpen, onCheckedChange = null)
             }
             if (needsPassword) OutlinedTextField(
                 value = password, onValueChange = { password = it }, label = { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_contrasena_de_la_wi_fi)) },
@@ -445,10 +443,10 @@ private fun ChooseNetwork(ui: WifiSetupUi, onSend: (String, String) -> Unit, onR
                 visualTransformation = if (show) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
                 trailingIcon = {
-                    IconButton(onClick = { show = !show }) {
-                        Icon(if (show) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
-                            contentDescription = if (show) Txt.s(R.string.ui_ocultar_contrasena) else Txt.s(R.string.ui_mostrar_contrasena))
-                    }
+                    // Tecla rotulada VER / OCULT. en lugar del ojo (1.15.0).
+                    io.github.soundtouchradio.ui.components.PanelKey(if (show) Txt.s(R.string.ui_tecla_ocultar) else Txt.s(R.string.ui_tecla_ver),
+                        onClick = { show = !show }, active = show, modifier = Modifier.padding(end = 6.dp),
+                        description = if (show) Txt.s(R.string.ui_ocultar_contrasena) else Txt.s(R.string.ui_mostrar_contrasena))
                 },
             )
             Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_la_contrasena_viaja_unos_segundos),
@@ -457,7 +455,7 @@ private fun ChooseNetwork(ui: WifiSetupUi, onSend: (String, String) -> Unit, onR
                 onClick = { onSend(ssid, if (needsPassword) password else "") },
                 enabled = ssid.isNotEmpty() && (!needsPassword || password.length >= 8 || (net != null && "wep" in net.securityTypes)),
                 modifier = Modifier.fillMaxWidth(),
-            ) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_enviar_a_soundtouch)) }
+            ) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_enviar_a_soundtouch)).uppercase()) }
         }
     }
 }
@@ -465,11 +463,11 @@ private fun ChooseNetwork(ui: WifiSetupUi, onSend: (String, String) -> Unit, onR
 @Composable
 private fun NetworkSignal(n: WifiNetwork) {
     val cs = MaterialTheme.colorScheme
-    val icon = when (n.bars) { 4 -> Icons.Filled.SignalWifi4Bar; 3 -> Icons.Filled.NetworkWifi3Bar; 2 -> Icons.Filled.NetworkWifi2Bar; 1 -> Icons.Filled.NetworkWifi1Bar; else -> Icons.Filled.SignalWifi0Bar }
     val desc = Txt.s(R.string.ui_senal, listOf(Txt.s(R.string.ui_senal_muy_debil),Txt.s(R.string.ui_senal_debil),Txt.s(R.string.ui_senal_media),Txt.s(R.string.ui_senal_buena),Txt.s(R.string.ui_senal_excelente))[n.bars]) + if (n.secure) Txt.s(R.string.ui_protegida) else Txt.s(R.string.ui_abierta)
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.semantics(mergeDescendants = true) { contentDescription = desc }) {
-        if (n.secure) Icon(Icons.Filled.Lock, null, Modifier.size(16.dp), tint = cs.onSurfaceVariant)
-        Spacer(Modifier.width(4.dp))
-        Icon(icon, null, tint = cs.onSurfaceVariant)
+        // Rótulo WPA y escala de pilotos de señal en lugar del candado y del abanico Wi-Fi (1.15.0).
+        if (n.secure) io.github.soundtouchradio.ui.components.EngravedTag("WPA")
+        Spacer(Modifier.width(8.dp))
+        io.github.soundtouchradio.ui.components.SignalScale(n.bars)
     }
 }

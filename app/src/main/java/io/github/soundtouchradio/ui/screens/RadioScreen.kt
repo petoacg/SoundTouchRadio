@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.TextButton
+import io.github.soundtouchradio.ui.components.TextButton
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -41,14 +41,14 @@ import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
+import io.github.soundtouchradio.ui.components.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
+import io.github.soundtouchradio.ui.components.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -86,7 +86,6 @@ import io.github.soundtouchradio.ui.components.Pilot
 import io.github.soundtouchradio.ui.components.PilotLight
 import io.github.soundtouchradio.ui.components.PresetKey
 import io.github.soundtouchradio.ui.components.PowerButton
-import io.github.soundtouchradio.ui.components.SectionTitle
 import io.github.soundtouchradio.ui.theme.Tabular
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -226,14 +225,16 @@ fun RadioScreen(
                         },
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Icon(if (kind == io.github.soundtouchradio.player.AlarmPlan.Kind.ONCE) Icons.Filled.Event else Icons.Filled.Alarm,
-                        contentDescription = null, tint = tint, modifier = Modifier.size(20.dp))
-                    Spacer(Modifier.width(12.dp))
-                    Text(line, style = MaterialTheme.typography.bodyMedium.merge(Tabular), color = tint, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    // Rótulo serigrafiado en lugar del dibujo de reloj o calendario (1.15.0).
+                    io.github.soundtouchradio.ui.components.EngravedTag(
+                        if (kind == io.github.soundtouchradio.player.AlarmPlan.Kind.ONCE) Txt.s(R.string.ui_tag_una_vez) else Txt.s(R.string.ui_tag_alarma),
+                        color = tint)
+                    Spacer(Modifier.width(10.dp))
+                    Text(line, style = MaterialTheme.typography.bodyMedium.merge(io.github.soundtouchradio.ui.theme.ProseNumbers), color = tint, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
             }
         }
-                SectionTitle(Txt.s(R.string.ui_presets))
+                io.github.soundtouchradio.ui.components.PanelLabel(Txt.s(R.string.ui_presets))
                 // Cada tecla ocupa su columna (las etiquetas ya no se tocan); ancho máximo para que
                 // en horizontal o pantallas anchas el teclado no se estire de borde a borde.
                 Column(
@@ -250,6 +251,7 @@ fun RadioScreen(
                             PresetKey(
                                 number = slot + 1, label = st?.name,
                                 playing = st != null && st.id == playingId,
+                                level = state.volume,
                                 onClick = { if (st != null) vm.playPreset(slot) else presetSlot = slot },
                                 onLongClick = { presetSlot = slot },
                                 modifier = Modifier.weight(1f),
@@ -269,11 +271,11 @@ fun RadioScreen(
                         style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(top = 4.dp, bottom = 16.dp))
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        OutlinedButton(onClick = { importer.launch(arrayOf("*/*")) }) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_importar)) }
-                        FilledTonalButton(onClick = { showAdd = true }) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_anadir_emisora)) }
+                        OutlinedButton(onClick = { importer.launch(arrayOf("*/*")) }) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_importar)).uppercase()) }
+                        FilledTonalButton(onClick = { showAdd = true }) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_anadir_emisora)).uppercase()) }
                     }
-                    androidx.compose.material3.TextButton(onClick = vm::restoreSeedStations, modifier = Modifier.padding(top = 8.dp)) {
-                        Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_restaurar_emisoras_precargadas))
+                    io.github.soundtouchradio.ui.components.TextButton(onClick = vm::restoreSeedStations, modifier = Modifier.padding(top = 8.dp)) {
+                        Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_restaurar_emisoras_precargadas)).uppercase())
                     }
                 }
             }
@@ -315,7 +317,8 @@ fun RadioScreen(
                         onClick = { showSpeakers = true },
                         label = { Text(if (onPhone) phoneName else speaker?.name ?: Txt.s(R.string.ui_elegir_altavoz), maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.widthIn(max = 140.dp)) },
                         leadingIcon = {
-                            if (onPhone) Icon(Icons.Filled.PhoneAndroid, contentDescription = null, modifier = Modifier.height(AssistChipDefaults.IconSize)) else
+                            // «Este móvil»: piloto cuadrado (salida del propio aparato) en lugar del dibujo de un teléfono.
+                            if (onPhone) io.github.soundtouchradio.ui.components.PilotSquare(state.phase is Phase.Playing, size = 9.dp) else
                             PilotLight(when {
                                 speaker == null -> Pilot.OFF
                                 state.phase is Phase.Playing -> Pilot.ON
@@ -408,7 +411,8 @@ internal fun StationRow(
     var menu by remember { mutableStateOf(false) }
     val https = UrlRules.isHttps(station.url)
     val hls = UrlRules.looksLikeHls(station.url)
-    val tech = listOfNotNull(station.codec, station.bitrateKbps?.let { "$it kbps" }).joinToString(" · ")
+    val techParts = listOfNotNull(station.codec, station.bitrateKbps?.let { "$it\u00A0kbps" })
+    val tech = techParts.joinToString(" · ")
     val stateText = when (pilot) {
         Pilot.ON -> Txt.s(R.string.ui_sonando); Pilot.BUSY -> Txt.s(R.string.ui_cargando); Pilot.ERROR -> Txt.s(R.string.ui_no_suena); Pilot.WARN -> Txt.s(R.string.ui_aviso); else -> null
     }
@@ -417,24 +421,31 @@ internal fun StationRow(
             .clickable(onClickLabel = Txt.s(R.string.ui_reproducir), onClick = onPlay)
             .semantics { if (stateText != null) stateDescription = stateText },
         colors = ListItemDefaults.colors(containerColor = cs.surface),
+        // Columna de canal (1.12.0): el piloto a la izquierda y el número de memoria en lectura a la derecha. El número
+        // ya no desaparece cuando la emisora suena: se lee como la tabla de memorias de un receptor.
         leadingContent = {
-            Box(Modifier.widthIn(min = 24.dp), contentAlignment = Alignment.Center) {
-                if (pilot != null) PilotLight(pilot) else if (presetNumbers.isNotEmpty())
-                    Text("${presetNumbers.first()}", style = MaterialTheme.typography.labelLarge.merge(Tabular), color = cs.onSurfaceVariant)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(Modifier.size(10.dp), contentAlignment = Alignment.Center) { if (pilot != null) PilotLight(pilot, size = 8.dp) }
+                Spacer(Modifier.width(6.dp))
+                Box(Modifier.width(20.dp), contentAlignment = Alignment.CenterEnd) {
+                    if (presetNumbers.isNotEmpty()) Text("${presetNumbers.first()}",
+                        style = MaterialTheme.typography.labelLarge.merge(io.github.soundtouchradio.ui.theme.Readout),
+                        color = if (pilot == Pilot.ON) cs.onSurface else cs.onSurfaceVariant)
+                }
             }
         },
         headlineContent = { Text(station.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
-        // Una sola línea secundaria (1.9.0): «AAC · 128 kbps · dominio». Los avisos (https, HLS) en ámbar al principio.
+        // Una sola línea secundaria en lectura (1.12.0): «AAC · 128 kbps». El dominio solo aparece si no se conoce el
+        // formato (se ve completo en Editar y en Diagnóstico). Los avisos (https, HLS) en ámbar al principio.
         supportingContent = {
             val host = station.url.substringAfter("://").substringBefore('/')
             Text(
                 androidx.compose.ui.text.buildAnnotatedString {
                     val warn = when { hls -> "HLS"; https -> "https"; else -> null }
                     if (warn != null) { withStyle(androidx.compose.ui.text.SpanStyle(color = cs.tertiary)) { append(warn) }; append(" · ") }
-                    if (tech.isNotEmpty()) append("$tech · ")
-                    append(host)
+                    append(io.github.soundtouchradio.ui.components.readoutJoin(techParts.ifEmpty { listOf(host) }))
                 },
-                style = MaterialTheme.typography.bodyMedium.merge(Tabular),
+                style = MaterialTheme.typography.bodySmall.merge(io.github.soundtouchradio.ui.theme.Readout),
                 maxLines = 1, overflow = TextOverflow.Ellipsis, color = cs.onSurfaceVariant,
             )
         },
@@ -461,13 +472,9 @@ internal fun StationRow(
 /** Cabecera «Emisoras» con su acción «Añadir»: sin botón flotante que tape filas encima del panel «Ahora suena». */
 @Composable
 internal fun StationsHeader(onAdd: () -> Unit) {
-    Row(Modifier.fillMaxWidth().padding(end = 8.dp)) {
-        SectionTitle(Txt.s(R.string.ui_emisoras), Modifier.weight(1f).alignByBaseline())
-        TextButton(onClick = onAdd, modifier = Modifier.alignByBaseline()) {
-            Icon(Icons.Filled.Add, contentDescription = null, modifier = Modifier.size(18.dp))
-            Spacer(Modifier.width(8.dp))
-            Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_anadir))
-        }
+    // «Añadir» discreto (1.18.0): tecla «+» pequeña en ámbar tenue al final del rótulo; no compite con la lista.
+    io.github.soundtouchradio.ui.components.PanelLabel(Txt.s(R.string.ui_emisoras)) {
+        io.github.soundtouchradio.ui.components.AddKey(onAdd, Txt.s(R.string.ui_anadir_emisora))
     }
 }
 
@@ -480,19 +487,20 @@ internal fun AddStationSheet(onDismiss: () -> Unit, onSearch: () -> Unit, onUrl:
         contentWindowInsets = { io.github.soundtouchradio.ui.components.NoSheetInsets }) {
         Column(Modifier.padding(bottom = io.github.soundtouchradio.ui.components.sheetBottomInset())) {
             Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_anadir_emisora_2), style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp))
-            AddRow(Icons.Filled.Search, Txt.s(R.string.ui_buscar_en_el_directorio), Txt.s(R.string.ui_emisoras_de_espana_y_del), onSearch)
-            AddRow(Icons.Filled.Link, Txt.s(R.string.ui_escribir_una_url), Txt.s(R.string.ui_si_ya_tienes_la_direccion), onUrl)
-            AddRow(Icons.Filled.FileOpen, Txt.s(R.string.ui_importar_archivo), Txt.s(R.string.ui_json_m3u_o_pls), onImport)
+            AddRow(Txt.s(R.string.ui_tag_dir), Txt.s(R.string.ui_buscar_en_el_directorio), Txt.s(R.string.ui_emisoras_de_espana_y_del), onSearch)
+            AddRow("URL", Txt.s(R.string.ui_escribir_una_url), Txt.s(R.string.ui_si_ya_tienes_la_direccion), onUrl)
+            AddRow(Txt.s(R.string.ui_tag_archivo), Txt.s(R.string.ui_importar_archivo), Txt.s(R.string.ui_json_m3u_o_pls), onImport)
         }
     }
 }
 
 @Composable
-private fun AddRow(icon: androidx.compose.ui.graphics.vector.ImageVector, title: String, detail: String, onClick: () -> Unit) {
+private fun AddRow(tag: String, title: String, detail: String, onClick: () -> Unit) {
+    // Como el selector de fuentes de un equipo (TUNER, AUX, CD): cada entrada lleva su rótulo, no un dibujo (1.15.0).
     ListItem(
         modifier = Modifier.clickable(onClick = onClick),
         colors = ListItemDefaults.colors(containerColor = androidx.compose.ui.graphics.Color.Transparent),
-        leadingContent = { Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant) },
+        leadingContent = { io.github.soundtouchradio.ui.components.EngravedTag(tag, Modifier.widthIn(min = 44.dp)) },
         headlineContent = { Text(title) },
         supportingContent = { Text(detail) },
     )

@@ -12,7 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.material3.RadioButton
+import io.github.soundtouchradio.ui.components.RadioButton
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -25,9 +25,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Switch
+import io.github.soundtouchradio.ui.components.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import io.github.soundtouchradio.ui.components.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -115,7 +115,8 @@ fun SettingsContent(
                 steps.forEachIndexed { i, n ->
                     SegmentedButton(
                         selected = s.volumeStep == n, onClick = { onVolumeStep(n) },
-                        shape = androidx.compose.material3.SegmentedButtonDefaults.itemShape(i, steps.size),
+                        shape = androidx.compose.material3.SegmentedButtonDefaults.itemShape(i, steps.size, baseShape = io.github.soundtouchradio.ui.components.KeyShape),
+                        icon = { if (s.volumeStep == n) io.github.soundtouchradio.ui.components.SelectedPilot() },
                         label = { Text(if (n == 1) Txt.s(R.string.ui_1_punto) else "$n", style = MaterialTheme.typography.labelLarge.merge(io.github.soundtouchradio.ui.theme.Tabular)) },
                     )
                 }
@@ -123,7 +124,7 @@ fun SettingsContent(
 
             SectionTitle(Txt.s(R.string.ui_emisoras))
             Body(Txt.s(R.string.ui_restaurar_detalle))
-            TextButton(onClick = onRestoreSeeds, modifier = Modifier.padding(horizontal = 8.dp)) { Text(Txt.s(R.string.ui_restaurar_emisoras_precargadas_2)) }
+            TextButton(onClick = onRestoreSeeds, modifier = Modifier.padding(horizontal = 8.dp)) { Text((Txt.s(R.string.ui_restaurar_emisoras_precargadas_2)).uppercase()) }
 
             SectionTitle(Txt.s(R.string.ui_privacidad))
             Body(Txt.s(R.string.ui_sin_cuentas_sin_analitica_sin))

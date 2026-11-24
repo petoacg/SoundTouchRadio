@@ -23,7 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material3.Button
+import io.github.soundtouchradio.ui.components.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,14 +31,14 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
+import io.github.soundtouchradio.ui.components.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import io.github.soundtouchradio.ui.components.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -87,8 +87,11 @@ fun LinkScreen(vm: AppViewModel, snackbar: SnackbarHostState, canGoBack: Boolean
                 title = { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_vincular_altavoz)) },
                 navigationIcon = { if (canGoBack) IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, Txt.s(R.string.ui_volver)) } },
                 actions = {
-                    IconButton(onClick = vm::scan, enabled = !disc.scanning) { Icon(Icons.Filled.Refresh, Txt.s(R.string.ui_buscar_de_nuevo)) }
-                    IconButton(onClick = onDiagnostics) { Icon(Icons.Outlined.Info, Txt.s(R.string.ui_diagnostico_3)) }
+                    // Teclas rotuladas en lugar de los dibujos de refrescar e información (1.15.0).
+                    io.github.soundtouchradio.ui.components.PanelKey(Txt.s(R.string.ui_tecla_scan), onClick = vm::scan, enabled = !disc.scanning,
+                        description = Txt.s(R.string.ui_buscar_de_nuevo))
+                    io.github.soundtouchradio.ui.components.PanelKey(Txt.s(R.string.ui_tecla_diag), onClick = onDiagnostics,
+                        description = Txt.s(R.string.ui_diagnostico_3), modifier = Modifier.padding(start = 6.dp, end = 8.dp))
                 },
             )
         },
@@ -112,9 +115,16 @@ fun LinkScreen(vm: AppViewModel, snackbar: SnackbarHostState, canGoBack: Boolean
                     modifier = Modifier.clickable(onClickLabel = Txt.s(R.string.ui_comprobar_3)) { manual = false; vm.checkCandidate(c) },
                     colors = ListItemDefaults.colors(containerColor = cs.surface),
                     leadingContent = { PilotLight(if (c.host in linkedHosts) Pilot.ON else Pilot.OFF) },
-                    headlineContent = { Text(c.label?.takeIf { c.via == FoundVia.MDNS } ?: c.host, style = MaterialTheme.typography.bodyLarge.merge(Tabular)) },
-                    supportingContent = { Text("${c.host} · ${Linker.viaLabel(c.via)}${if (c.host in linkedHosts) " · " + Txt.s(R.string.ui_vinculado_etiqueta) else ""}", style = MaterialTheme.typography.bodyMedium.merge(Tabular)) },
-                    trailingContent = { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_comprobar), color = cs.primary, style = MaterialTheme.typography.labelLarge) },
+                    // Nombre en Roboto; IP y método en lectura (1.18.0). Si no hay nombre, la IP hace de título en lectura.
+                    headlineContent = {
+                        val name = c.label?.takeIf { c.via == FoundVia.MDNS }
+                        Text(name ?: c.host, style = if (name != null) MaterialTheme.typography.bodyLarge else MaterialTheme.typography.bodyLarge.merge(Tabular))
+                    },
+                    supportingContent = { Text(io.github.soundtouchradio.ui.components.readoutJoin(listOfNotNull(c.host, Linker.viaLabel(c.via),
+                        if (c.host in linkedHosts) Txt.s(R.string.ui_vinculado_etiqueta) else null)), style = MaterialTheme.typography.bodySmall.merge(Tabular)) },
+                    // Tecla con contorno, como «Comprobar» por IP (1.18.0).
+                    trailingContent = { OutlinedButton(onClick = { manual = false; vm.checkCandidate(c) }) {
+                        Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_comprobar)).uppercase()) } },
                 )
             }
             if (!disc.scanning && disc.scannedOnce && disc.candidates.isEmpty()) {
@@ -148,7 +158,7 @@ fun LinkScreen(vm: AppViewModel, snackbar: SnackbarHostState, canGoBack: Boolean
                     modifier = Modifier.weight(1f),
                 )
                 Spacer(Modifier.width(12.dp))
-                OutlinedButton(onClick = { manual = true; ipError = vm.checkManualIp(ip) }, modifier = Modifier.padding(top = 8.dp)) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_comprobar_2)) }
+                OutlinedButton(onClick = { manual = true; ipError = vm.checkManualIp(ip) }, modifier = Modifier.padding(top = 8.dp)) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_comprobar_2)).uppercase()) }
             }
 
             SectionTitle(Txt.s(R.string.ui_altavoz_recien_reseteado))
@@ -156,8 +166,8 @@ fun LinkScreen(vm: AppViewModel, snackbar: SnackbarHostState, canGoBack: Boolean
                 androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_si_el_altavoz_no_esta),
                 style = MaterialTheme.typography.bodyMedium, color = cs.onSurfaceVariant, modifier = Modifier.padding(horizontal = 16.dp),
             )
-            androidx.compose.material3.FilledTonalButton(onClick = onWifiSetup, modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-                Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_configurar_la_wi_fi_del))
+            io.github.soundtouchradio.ui.components.FilledTonalButton(onClick = onWifiSetup, modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+                Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_configurar_la_wi_fi_del)).uppercase())
             }
         }
     }
@@ -174,13 +184,13 @@ internal fun LinkSteps(r: LinkReport, onUse: () -> Unit, onRetry: () -> Unit) {
                 Column(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
                     Text(info.type, style = MaterialTheme.typography.headlineSmall)
                     Text(info.name, style = MaterialTheme.typography.titleMedium)
-                    Text(listOfNotNull(r.host, info.macAddress).joinToString(" · "), style = MaterialTheme.typography.bodyMedium.merge(Tabular), color = cs.onSurfaceVariant)
+                    Text(io.github.soundtouchradio.ui.components.readoutJoin(listOfNotNull(r.host, info.macAddress)), style = MaterialTheme.typography.bodyMedium.merge(Tabular), color = cs.onSurfaceVariant)
                     Spacer(Modifier.height(12.dp))
-                    if (r.usable) Button(onClick = onUse, modifier = Modifier.fillMaxWidth()) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_usar_este_altavoz)) }
-                    else TextButton(onClick = onRetry) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_volver_a_comprobar)) }
+                    if (r.usable) Button(onClick = onUse, modifier = Modifier.fillMaxWidth()) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_usar_este_altavoz)).uppercase()) }
+                    else TextButton(onClick = onRetry) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_volver_a_comprobar)).uppercase()) }
                 }
             } else if (r.done) {
-                TextButton(onClick = onRetry, modifier = Modifier.padding(horizontal = 8.dp)) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_volver_a_comprobar_2)) }
+                TextButton(onClick = onRetry, modifier = Modifier.padding(horizontal = 8.dp)) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_volver_a_comprobar_2)).uppercase()) }
             }
         }
     }

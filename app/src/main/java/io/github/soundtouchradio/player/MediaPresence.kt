@@ -10,8 +10,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
 import android.media.MediaMetadata
 import android.media.VolumeProvider
 import android.media.session.MediaSession
@@ -37,7 +35,6 @@ class MediaPresence(private val context: Context, private val step: () -> Int = 
     private var provider: VolumeProvider? = null
     private var target: SpeakerController? = null
     private var lastKey: String? = null
-    private val art: Bitmap by lazy { grilleArt() }
 
     init {
         nm.createNotificationChannel(NotificationChannel(CHANNEL, Txt.s(R.string.ui_reproduccion), NotificationManager.IMPORTANCE_LOW).apply {
@@ -83,7 +80,9 @@ class MediaPresence(private val context: Context, private val step: () -> Int = 
         val station = state.stationName ?: Txt.s(R.string.ui_radio_2)
         val speaker = speakerName ?: "SoundTouch"
         val canPause = playing && state.pauseAvailable
-        val key = "$station|$speaker|$paused|$canPause"
+        // El volumen entra en la clave a pasos de 5: la carátula del frontal refleja el nivel sin repintar a cada punto.
+        val key = "$station|$speaker|$paused|$canPause|${state.volume?.div(5)}"
+        val art = PanelArt.render(app, onAir = !paused, volume = state.volume)
         if (key == lastKey && session.isActive) return
         lastKey = key
 
@@ -123,21 +122,6 @@ class MediaPresence(private val context: Context, private val step: () -> Int = 
 
     private fun openApp() = PendingIntent.getActivity(app, 40, Intent(app, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), PendingIntent.FLAG_IMMUTABLE)
     private fun action(a: String) = PendingIntent.getBroadcast(app, a.hashCode(), Intent(app, MediaActionReceiver::class.java).setAction(a), PendingIntent.FLAG_IMMUTABLE)
-
-    /** Carátula: la rejilla de perforaciones en gris con la fila inferior en verde (la luz piloto de «suena»). */
-    private fun grilleArt(): Bitmap {
-        val s = 320
-        val b = Bitmap.createBitmap(s, s, Bitmap.Config.ARGB_8888)
-        val c = Canvas(b)
-        c.drawColor(0xFF2B2D30.toInt())
-        val p = Paint(Paint.ANTI_ALIAS_FLAG)
-        val n = 7; val gap = s / (n + 1f)
-        for (row in 1..n) for (col in 1..n) {
-            p.color = if (row == n) 0xFF86D5A1.toInt() else 0xFF55585C.toInt()
-            c.drawCircle(col * gap, row * gap, gap * 0.28f, p)
-        }
-        return b
-    }
 
     companion object {
         const val CHANNEL = "playback"

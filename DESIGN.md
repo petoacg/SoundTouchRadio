@@ -38,12 +38,12 @@ typography:
     fontWeight: 400
     lineHeight: 1.43
   data:
-    fontFamily: "Roboto, sans-serif"
+    fontFamily: "IBM Plex Mono, monospace"
     fontSize: "12sp"
     fontWeight: 500
     fontFeature: "tnum"
   key-number:
-    fontFamily: "Roboto, sans-serif"
+    fontFamily: "IBM Plex Mono, monospace"
     fontSize: "16sp"
     fontWeight: 500
     fontFeature: "tnum"
@@ -75,15 +75,15 @@ components:
     textColor: "{colors.ink}"
     typography: "{typography.key-number}"
     rounded: "{rounded.full}"
-    size: "56dp"
+    size: "54dp"
   preset-key-empty:
     textColor: "{colors.ink-muted}"
     typography: "{typography.key-number}"
     rounded: "{rounded.full}"
-    size: "56dp"
+    size: "54dp"
   now-playing-panel:
     backgroundColor: "{colors.panel}"
-    rounded: "{rounded.xl}"
+    rounded: "{rounded.lg}"
     padding: "16dp"
   pilot-light:
     backgroundColor: "{colors.primary}"
@@ -97,7 +97,32 @@ components:
 
 **«Radio Braun».** La app es un aparato de radio de sobremesa bien diseñado, no un reproductor de streaming: carcasa gris fría, texto casi negro, un único color de mando y orden estricto. La estructura, la navegación y los controles son Material 3 nativo; el mundo solo aporta paleta, tipografía, densidad y un gesto propio. Rechaza la plantilla del sector (fondo negro, carátula gigante, ecualizador neón) y la radio retro de madera.
 
-Principio rector: **el verde significa «confirmado por el altavoz»**. Nada se pinta de verde por decoración.
+Principio rector: **el verde es luz de estado vivo**: lo que está en marcha, elegido, activado o confirmado por el altavoz (1.19.0, formulado por el usuario). **Las acciones van en tinta.** Nada se pinta de verde por decoración ni por ser pulsable.
+
+**Instrumento (1.12.0; 1.13.0, pedido del usuario).** Homenaje discreto a las mesas de sonido y los equipos de radiofonía de los 70 a los 90: mandos redondos con corona de segmentos, pilotos rotulados, faders con su carril y su escala, displays fijos con rótulos que se desplazan despacio. **Un panel nunca cambia de tamaño.** Todo se dibuja de forma esquemática y sintáctica (1.14.0): signos, no dibujos; nada de relieve, sombras ni estrías.
+
+**Regla de los rótulos (1.14.0):** un frontal técnico rotula sus teclas, no las ilustra. En el panel no hay pictogramas de consumo (altavoz, barritas, luna): las teclas dicen **MUTE**, **SLEEP** y **EQ**. Los únicos signos permitidos son los de transporte (❚❚ ▶ ■), que sí llevan los equipos. La app se lee como el frontal de un equipo técnico (receptor, transistor profesional, sintetizador) con raíz digital: zonas rotuladas, teclado de memorias, ventana de lectura, escala graduada y cifras en lectura. Nunca se imita el objeto físico: nada de perillas, diales, LCD con brillo, fuentes de 7 segmentos, líneas de barrido ni texturas.
+
+## Sistema del frontal (1.15.0)
+
+Toda la app es **un mismo aparato**. Las piezas viven en `ui/components/Controls.kt` e `Instrument.kt` y sustituyen a los controles de Material con el mismo nombre y la misma firma, así que la coherencia es estructural: ninguna pantalla puede salirse del lenguaje.
+
+**De la parte al todo:**
+
+| Nivel | Pieza | Regla |
+|---|---|---|
+| Signo | Piloto cuadrado | Único indicador de estado. Verde = activo o confirmado; ámbar tenue = espera; ámbar = aviso; rojo = fallo; gris = apagado. Sustituye a ✓, a los círculos de selección y a la píldora de los interruptores. |
+| Signo | Rótulo serigrafiado | Mayúsculas en Plex Mono con 0,08 em: teclas (MUTE, SLEEP, EQ, SCAN, DIAG, NOMBRE, VER, CLR), etiquetas (WPA, ALARMA, 1 VEZ, DIR, URL, ARCH) y los pilotos del display (AIRE, ESPERA, DATOS). |
+| Signo | Signos de equipo | Los únicos dibujos permitidos: transporte (❚❚ ▶ ■), encendido ⏻, ▾ / ▴ de desplegable, + de añadir, ⋮ y la flecha Atrás del sistema. |
+| Pieza | Tecla «+» | Cuadradito de 30 dp con contorno de 1 dp y el signo + en tinta (1.19.0; en la 1.18.0 fue ámbar y se retiró porque el ámbar significa espera). Acción secundaria discreta que no compite con el contenido. Área táctil de 48 dp. |
+| Pieza | Tecla | Rectángulo de radio 4 dp (`KeyShape`), nunca píldora ni sombra. Rótulo **serigrafiado**: mayúsculas en Plex Mono de 12 sp, como ALARMA y MUTE (1.19.0). **Principal: rellena en tinta** (clara en oscuro, negra en claro) con letra en el color de fondo. **Secundaria: contorno de 1 dp y rótulo en tinta.** Ninguna acción es texto suelto (1.17.0) ni verde (1.19.0). |
+| Pieza | Desplegable | Fila a todo el ancho con contorno de 1 dp, piloto (verde si está abierta: es un estado), rótulo en tinta y letra normal (es una pregunta) y ▾ / ▴ en tinta. El rótulo no cambia al abrir. |
+| Pieza | Interruptor | Tecla de 1 dp con piloto y ON / OFF. |
+| Pieza | Selector | Una opción: solo el piloto (gris o verde). Varias: recuadro de 1 dp con el piloto dentro (1.17.0). |
+| Pieza | Escalas | Fader esquemático con regla; escala de pilotos de nivel (volumen) y de señal (Wi-Fi, en escalera). |
+| Conjunto | Zona rotulada | `PanelLabel` en mayúsculas con su línea hasta el borde. |
+| Conjunto | Display | Ventana de lectura de tamaño fijo con pilotos rotulados. |
+| Conjunto | Frontal | El panel «Ahora suena»: tres franjas fijas (lectura y transporte · fader · teclas rotuladas). |
 
 ## Colors
 
@@ -105,7 +130,8 @@ Principio rector: **el verde significa «confirmado por el altavoz»**. Nada se 
 - **Verde piloto** (`#2A6F47` claro, `#8BD5A2` oscuro): acción principal (Stop, «Usar este altavoz», «Vincular»), luz piloto, puntos encendidos de la rejilla y el texto «Sonando». Contraste 5,2:1 sobre la carcasa clara y 9,9:1 sobre la oscura.
 
 ### Tertiary
-- **Ámbar de aviso** (`#7A4600` / `#FFB870`): solo avisos de stream (https, HLS, redirección a https).
+- **Ámbar de aviso** (`#7A4600` / `#FFB870`): avisos de stream (https, HLS, redirección a https) y el piloto DATOS. Siempre con texto.
+- **Ámbar tenue de espera** (1.13.0; el ámbar al 62 %, `standbyColor()`): el piloto de *standby* de los equipos clásicos. Listo, detenido, en pausa o en reposo: rejilla quieta, piloto ESPERA y palabra de estado. No late.
 
 ### Neutral
 - **Carcasa** (`#ECEDEB` / `#1B1C1E`): fondo de toda la app; gris frío, sin calidez.
@@ -114,16 +140,16 @@ Principio rector: **el verde significa «confirmado por el altavoz»**. Nada se 
 - **Tecla tonal** (`#D9DDDF` / `#3F4447`): presets asignados.
 
 ### Named Rules
-- **Regla del piloto:** verde = el altavoz confirma que suena. Gris = apagado o pendiente. Ámbar = aviso. Rojo = fallo.
+- **Regla del piloto:** verde = el altavoz confirma que suena (es el botón ON de canal de las mesas de emisión). Ámbar tenue = en espera. Ámbar pleno = aviso. Gris = sin altavoz o pendiente. Rojo = fallo.
 - **Regla del color único:** no hay un segundo acento. El color dinámico (Material You) es una opción del usuario y está desactivado por defecto.
 
 ## Typography
 
-Roboto del sistema en todos los papeles, con la escala de Material 3 en sp, de modo que respeta la escala de fuente del sistema. Las cifras de IP, kbps, volumen, números de preset y tiempos usan cifras tabulares (`tnum`).
+Dos voces (1.12.0; en toda la app desde la 1.13.0: `Tabular` es Plex Mono, y `ProseNumbers` deja en Roboto las frases con cifras). **Roboto** del sistema para todo lo que se *nombra* (títulos, emisoras, textos), con la escala de Material 3 en sp. **IBM Plex Mono** (incluida en la app, SIL OFL 1.1; licencia en `docs/LICENCIA-IBM-Plex-Mono.txt`; nunca se descarga) para lo que se *mide*: números de canal y de preset, códec y kbps, estado en la ventana de lectura, volumen y escala. Estilo `Readout` en `Theme.kt`. Las demás pantallas siguen con Roboto y `tnum` hasta que se extienda el lenguaje.
 
 ### Hierarchy
 - Título de pantalla: titleLarge (TopAppBar).
-- Encabezados de sección («Presets», «Emisoras», «En tu red»): titleSmall en tinta atenuada, con 24 dp encima y 8 dp debajo.
+- Rótulos de panel en Radio (1.12.0, `PanelLabel`): «PRESETS», «EMISORAS» en labelMedium, mayúsculas con 0,14 em de espaciado, tinta atenuada, y una línea de 1 dp en outlineVariant hasta el borde o hasta la acción de la sección. Es la serigrafía que delimita zonas del frontal. El resto de pantallas sigue con titleSmall (`SectionTitle`) hasta extenderlo.
 - Nombre de emisora: bodyLarge / titleMedium en el panel.
 - Datos técnicos: labelMedium tabular, alineados a la derecha.
 
@@ -163,9 +189,10 @@ Radios de 4/8/12/16/24 dp. Los mandos de reproducción y las teclas de preset so
 - Gesto Atrás predictivo activado.
 - Hojas inferiores para altavoces y presets.
 
-### Teclas de preset
-- Teclas circulares de 56 dp con el número tabular dentro y el nombre (hasta 2 líneas) debajo.
-- Asignada: tonal. Vacía: contorno de 1 dp. Sonando: luz piloto de 7 dp dentro de la tecla, arriba.
+### Teclas de preset (1.13.0: mandos de mesa)
+- **Circulares** (son identidad: los mandos de una mesa de sonido son redondos; las cuadradas de la 1.12.0 se retiraron). 54 dp, número en Plex Mono dentro y el nombre (hasta 2 líneas) debajo.
+- Asignada: tonal. Libre: contorno de 1 dp y **sin etiqueta**; la descripción accesible explica que se asigna manteniendo pulsado.
+- Sonando: **corona de 11 segmentos** en 270° alrededor (70 dp), abierta abajo, como el anillo de LED de un potenciómetro: enciende tantos segmentos como el volumen real del altavoz; los dos últimos en ámbar. Las demás teclas reservan el hueco.
 - Tocar reproduce; mantener pulsado abre las opciones.
 
 ### Rejilla de perforaciones (gesto propio)
@@ -220,9 +247,26 @@ Radios de 4/8/12/16/24 dp. Los mandos de reproducción y las teclas de preset so
 ### Vista ancha (≥ 600 dp)
 - Izquierda (45 %): «Ahora suena» como tarjeta (24 dp en las cuatro esquinas) y debajo el teclado. Derecha (55 %): emisoras.
 
+### Panel «Ahora suena» (1.12.0; fijo desde la 1.13.0)
+- Esquinas de 16 dp y una junta de 1 dp (outlineVariant al 60 %) en el borde: pieza de la misma carcasa.
+- **Tamaño fijo.** No crece ni encoge con el estado ni con el nombre de la emisora. Los avisos (https, fallo con su acción, «Encender», «Buscar altavoz») van en una franja **encima** del panel, nunca dentro.
+- **Ventana de lectura:** rectángulo de 8 dp en surfaceContainerLowest con borde de 1 dp, plano y sin brillo, con tres líneas fijas:
+  1. nombre (Roboto), una sola línea;
+  2. estado · formato · temporizador (Plex Mono), una sola línea;
+  3. **pilotos rotulados** (cuadradito de 7 dp y rótulo en mono de 9 sp): **AIRE** (verde), **ESPERA** (ámbar tenue) y, con «Este móvil», **DATOS** (ámbar). Nunca aparecen ni desaparecen: se encienden o quedan apagados.
+- Si una línea no cabe, se **desplaza despacio** (22 dp/s, 2 s de espera, 4 s entre pasadas), como el rótulo de un display de matriz de puntos. Con «Quitar animaciones», puntos suspensivos.
+- Tres franjas fijas (1.14.0):
+  1. rejilla de 56 dp, ventana de lectura y **transporte** en huecos fijos ([❚❚/▶] y ■, círculos de contorno de 1 dp; solo ■ se rellena en verde si hay algo que parar). Un mando se desactiva, no desaparece;
+  2. **fader** a todo el ancho con la cifra a la derecha;
+  3. **tira de teclas rotuladas** MUTE · SLEEP · EQ (EQ solo con «Este móvil»): rectángulo de 1 dp y radio de 3 dp, rótulo en Plex Mono y un cuadradito de 5 dp que se enciende si está activa (MUTE en ámbar, SLEEP en tinta).
+- Animación: solo el latido de la rejilla y el desplazamiento lento del texto. Sin colores nuevos.
+
 ### Volumen (1.8.0; 1.9.0)
 - Panel en dos filas (1.9.0). Arriba, la rejilla, la emisora y su estado, y los controles: temporizador, pausa y Stop, todos de 48 dp con 4 dp entre ellos. Abajo, silencio · barra larga · cifra. Sin teclas − / + (las hubo en la 1.8.x); la barra larga da el recorrido fino.
-- La cifra tiene dos estados: tenue mientras está pedida y normal cuando el altavoz confirma el valor. No es verde: el verde queda para la luz piloto.
+- La cifra (Plex Mono, titleSmall) tiene dos estados: tenue mientras está pedida y normal cuando el altavoz confirma el valor. No es verde: el verde queda para la luz piloto.
+- Escala graduada bajo la pista (1.12.0): una marca cada 10 en su posición real de la curva (más juntas arriba), más larga en 0, 50 y 100, con esas tres cifras en Plex Mono de 9 sp.
+- **Fader esquemático** (1.14.0): carril de 2 dp con el tramo recorrido en verde; capuchón plano de 8 × 22 dp (radio 1,5 dp) en tinta, con una muesca índice verde de 2 dp que lo cruza. Sin estrías, borde ni relieve. El mismo fader (`FaderSlider`) se usa en el volumen del despertador y, en vertical y sin verde, en el ajuste fino del ecualizador.
+- **Escala de pilotos** (1.14.0) sobre el carril del volumen: 20 cuadraditos de 6 dp que se encienden hasta donde está el capuchón (verde; ámbar desde la posición del 80). No reaccionan al sonido: repiten, de reojo y desde lejos, el nivel puesto a mano. Con MUTE se apagan.
 - El tamaño del paso de los botones del móvil se elige en Ajustes → Volumen (1, 2, 3 o 5).
 - La barra solo se mueve arrastrando el tirador, en relativo. Un toque en la pista no salta (seguridad nocturna, 1.8.2).
 - La barra usa una curva (volumen = 100·p²): el tramo bajo, el de la noche, ocupa más recorrido. Vibración en cada punto.
@@ -231,11 +275,13 @@ Radios de 4/8/12/16/24 dp. Los mandos de reproducción y las teclas de preset so
 ### Pantalla Radio (1.9.0)
 - Despertadores (1.9.1): una línea por cada alarma activada, ordenadas por hora. Semanal con icono de alarma; «una vez» con icono de calendario y «· una vez». La próxima va en onSurface y la otra en onSurfaceVariant.
 - Etiquetas de preset siempre con dos líneas reservadas, para que las teclas queden alineadas.
-- Filas de emisora: nombre y una sola línea secundaria «códec · kbps · dominio», con los avisos https y HLS en ámbar al principio. A la derecha, solo ⋮.
+- Rótulos de panel (`SectionTitle` = `PanelLabel` desde la 1.13.0) en **todas** las pantallas.
+- Filas de emisora (1.12.0): columna de canal a la izquierda con la luz piloto (8 dp) y el número de memoria en Plex Mono; el número ya no desaparece cuando suena. Línea secundaria en lectura: «códec · kbps» (el dominio solo si no se conoce el formato), con los avisos https y HLS en ámbar al principio. A la derecha, solo ⋮.
 - Entre el encendido y el chip del altavoz, 8 dp.
 - **Decisión del usuario (10 de noviembre de 2026):** el verde se queda tal como está, también en Stop, en la barra de volumen y en «Añadir». No proponerlo como hallazgo en futuras auditorías.
 
-### Pantalla de bloqueo y persiana (1.9.1)
+### Pantalla de bloqueo y persiana (1.9.1; frontal desde la 1.16.0)
+- Android dibuja el reproductor del sistema con su propia letra, colores y botones; la app solo controla la imagen de fondo. Esa imagen es el **frontal** (`PanelArt`, 960 × 480): rejilla de perforaciones a la derecha llena según el volumen, pilotos rotulados AIRE / ESPERA en Plex Mono encima y la escala de 20 pilotos con su carril abajo. Verde en el aire; ámbar tenue en pausa; la escala en ámbar desde el 80. La zona izquierda queda lisa para el título del sistema. Igual con el SoundTouch y con «Este móvil».
 - Notificación multimedia de Android con la sesión de la app: título = emisora, subtítulo = «Suena en SoundTouch 10», acciones pausa/continuar y detener. Icono pequeño: la rejilla de perforaciones. Carátula: la rejilla en gris con la fila inferior verde.
 - Solo mientras suena o está en pausa; al detener, desaparece.
 
@@ -266,7 +312,7 @@ Radios de 4/8/12/16/24 dp. Los mandos de reproducción y las teclas de preset so
 - Aislar Borrar al final del menú, tras un separador y en rojo.
 
 ### Don't:
-- No dibujar perillas, carcasas, plástico ni texturas: el mundo no se disfraza.
+- No dibujar perillas, carcasas, plástico ni texturas: el mundo no se disfraza. El carácter de instrumento sale de rótulos, rejilla, escalas y cifras, nunca de imitar el objeto.
 - No usar un segundo color de acento ni gradientes.
 - No marcar «http» como si fuera noticia: solo se marcan https y HLS.
 - No usar sombras como decoración.

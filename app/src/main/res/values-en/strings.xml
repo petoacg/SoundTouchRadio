@@ -634,4 +634,22 @@
     <string name="ui_aspecto">Appearance</string>
     <string name="ui_idioma_ahora">Now: %1$s</string>
     <string name="ui_restaurar_detalle">Adds back any built-in stations you deleted. Your own stations stay as they are.</string>
+    <string name="ui_piloto_aire">ON AIR</string>
+    <string name="ui_piloto_espera">STBY</string>
+    <string name="ui_piloto_datos">DATA</string>
+    <string name="ui_tecla_activa">on</string>
+    <string name="ui_tecla_mute">MUTE</string>
+    <string name="ui_tecla_sleep">SLEEP</string>
+    <string name="ui_tecla_eq">EQ</string>
+    <string name="ui_tag_alarma">ALARM</string>
+    <string name="ui_tag_una_vez">ONCE</string>
+    <string name="ui_tag_dir">DIR</string>
+    <string name="ui_tag_archivo">FILE</string>
+    <string name="ui_tecla_nombre">NAME</string>
+    <string name="ui_tecla_scan">SCAN</string>
+    <string name="ui_tecla_diag">DIAG</string>
+    <string name="ui_tecla_ver">SHOW</string>
+    <string name="ui_tecla_ocultar">HIDE</string>
+    <string name="ui_desplegado">expanded</string>
+    <string name="ui_plegado">collapsed</string>
 </resources>

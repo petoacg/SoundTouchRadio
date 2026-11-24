@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.material3.Button
+import io.github.soundtouchradio.ui.components.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -27,8 +27,8 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import io.github.soundtouchradio.ui.components.NoSheetInsets
 import io.github.soundtouchradio.ui.components.sheetBottomInset
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Switch
+import io.github.soundtouchradio.ui.components.OutlinedButton
+import io.github.soundtouchradio.ui.components.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.rememberScrollState
@@ -65,10 +65,10 @@ fun SleepSheet(active: SleepState?, onStart: (Int, Boolean) -> Unit, onCancel: (
             Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_apagar_en), style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp))
             if (active != null) {
                 val time = DateFormat.getTimeInstance(DateFormat.SHORT).format(Date(active.endsAtMillis))
-                Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_se_apaga_a_las, (active.speakerName).toString(), (time).toString()), style = MaterialTheme.typography.bodyLarge.merge(Tabular),
+                Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_se_apaga_a_las, (active.speakerName).toString(), (time).toString()), style = MaterialTheme.typography.bodyLarge.merge(io.github.soundtouchradio.ui.theme.ProseNumbers),
                     modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp))
                 OutlinedButton(onClick = { onCancel(); onDismiss() }, modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)) {
-                    Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_cancelar_temporizador))
+                    Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_cancelar_temporizador)).uppercase())
                 }
                 return@Column
             }
@@ -79,7 +79,7 @@ fun SleepSheet(active: SleepState?, onStart: (Int, Boolean) -> Unit, onCancel: (
                 SleepPlan.CHOICES.forEachIndexed { i, m ->
                     SegmentedButton(
                         selected = minutes == m, onClick = { minutes = m },
-                        shape = SegmentedButtonDefaults.itemShape(i, SleepPlan.CHOICES.size),
+                        shape = SegmentedButtonDefaults.itemShape(i, SleepPlan.CHOICES.size, baseShape = io.github.soundtouchradio.ui.components.KeyShape),
                         icon = {},
                         modifier = Modifier.semantics { contentDescription = "$m minutos" },
                     ) { Text("$m", style = MaterialTheme.typography.labelLarge.merge(Tabular)) }
@@ -104,7 +104,7 @@ fun SleepSheet(active: SleepState?, onStart: (Int, Boolean) -> Unit, onCancel: (
                     if (needs) notifPermission.launch(Manifest.permission.POST_NOTIFICATIONS) else { onStart(minutes, fade); onDismiss() }
                 },
                 modifier = Modifier.fillMaxWidth().padding(start = 24.dp, end = 24.dp, top = 16.dp),
-            ) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_iniciar_apagar_en_min, (minutes).toString())) }
+            ) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_iniciar_apagar_en_min, (minutes).toString())).uppercase()) }
         }
     }
 }

@@ -45,7 +45,7 @@ fun StepList(steps: List<LinkStep>, modifier: Modifier = Modifier) {
                     Text(s.title, style = MaterialTheme.typography.bodyLarge,
                         color = if (s.state == StepState.PENDING) cs.onSurfaceVariant else cs.onSurface)
                     s.detail?.let {
-                        Text(it, style = MaterialTheme.typography.bodyMedium.merge(Tabular),
+                        Text(it, style = MaterialTheme.typography.bodyMedium.merge(io.github.soundtouchradio.ui.theme.ProseNumbers),
                             color = when (s.state) { StepState.FAILED -> cs.error; StepState.WARNING -> cs.tertiary; else -> cs.onSurfaceVariant })
                     }
                 }

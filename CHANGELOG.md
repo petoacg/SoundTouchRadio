@@ -94,3 +94,35 @@ De la más antigua a la más reciente. Las pruebas con el altavoz real están en
 - **1.11.1**: **Ajustes más ordenados** (auditoría de la captura del usuario).
   - El idioma se elige en una lista con círculos, una opción por línea, como en los ajustes de Android. Antes, la fila de botones cortaba «Como el móvil» en «Como el». Debajo de «Como el móvil» se indica qué idioma está usando la app.
   - Secciones nuevas: **Aspecto** (colores e idioma), **Reproducción** (emisoras https y multiroom, lo experimental al final) y **Emisoras** (restaurar las precargadas, con una línea que explica que no toca las tuyas). Antes ese botón aparecía bajo «Volumen».
+- **1.12.0**: **Radio, más «instrumento»** (crítica de Impeccable, 32/40, y pulido pedido por el usuario). Misma paleta y el mismo verde.
+  - Rótulos de panel: «PRESETS» y «EMISORAS» en mayúsculas espaciadas, con una línea fina hasta el borde, como la serigrafía de un equipo.
+  - Teclado de memorias: teclas cuadradas con el número en IBM Plex Mono y una franja verde en el borde superior cuando suenan. Las libres ya no muestran «—».
+  - Ventana de lectura en «Ahora suena»: nombre, estado y formato dentro de un pequeño display plano; el estado y el formato en Plex Mono.
+  - Escala graduada bajo el volumen (marcas cada 10 y 0 / 50 / 100), en su posición real de la curva.
+  - Lista de emisoras: el número de memoria ya no desaparece cuando la emisora suena (el piloto va al lado), y la línea de datos queda en «códec · kbps», sin el dominio que se cortaba.
+  - IBM Plex Mono va incluida en la app (licencia SIL OFL 1.1 en docs/); no se descarga nada.
+- **1.13.0**: **homenaje a las mesas de sonido** (auditoría de Impeccable sobre capturas del usuario, 16/20), en toda la app.
+  - El panel «Ahora suena» ya no cambia de tamaño. Ventana de lectura con tres líneas fijas: nombre y estado se desplazan despacio si no caben, y debajo los pilotos rotulados **AIRE** (verde), **ESPERA** (ámbar tenue) y, con «Este móvil», **DATOS**. Los avisos y fallos salen en una franja encima del panel.
+  - Estado de espera con color propio: ámbar tenue, como el *standby* de los equipos clásicos («Listo», «Detenido», «En pausa»).
+  - Teclas de preset otra vez redondas, con una corona de 11 segmentos alrededor de la que suena que marca el volumen real.
+  - Fader de mesa: capuchón con su línea índice sobre un carril con escala, en el volumen, en el despertador y en el ajuste fino del ecualizador.
+  - Rótulos de panel y cifras en IBM Plex Mono en todas las pantallas; las frases con cifras siguen en Roboto. Separador « · » estrecho en los datos.
+  - Con «Este móvil», el ecualizador pasa a la fila del volumen y el panel muestra el volumen del móvil aunque no suene nada.
+- **1.14.0**: **panel esquemático, sin dibujitos** (auditoría de Impeccable sobre la captura del usuario).
+  - Fuera los pictogramas de consumo: el altavoz, las barritas y la luna pasan a ser teclas rotuladas **MUTE · SLEEP · EQ** en una tira propia. Solo quedan los signos de transporte (❚❚ ▶ ■), con contorno fino.
+  - Escala de pilotos cuadrados sobre el volumen: se encienden hasta donde está el fader (verde, ámbar arriba), para leer el nivel de un vistazo. No se mueven con el sonido; con MUTE se apagan.
+  - Fader simplificado: carril de 2 dp y capuchón plano con su muesca, sin estrías ni relieve. Igual en el despertador y en el ecualizador.
+  - El fader ocupa ahora todo el ancho del panel.
+- **1.15.0**: **toda la app, un mismo frontal** (sistema de diseño de Impeccable).
+  - Fuera todos los pictogramas de consumo. Quedan solo los signos que llevan los equipos (transporte, encendido, desplegable, menú y Atrás); el resto son rótulos serigrafiados: SCAN y DIAG al vincular, NOMBRE para renombrar un altavoz, VER y CLR en los campos, WPA y escala de pilotos de señal en la lista de redes Wi-Fi, ALARMA y 1 VEZ en la línea del despertador, DIR, URL y ARCH al añadir una emisora.
+  - Teclas rectangulares en todas las pantallas, sin píldoras ni sombras.
+  - Los interruptores son teclas con piloto y ON / OFF; las casillas de selección, recuadros con su piloto; los ✓ de chips y selectores, pilotos encendidos.
+  - Las pestañas del despertador llevan un piloto si su alarma está activada.
+- **1.16.0**: **el reproductor de la persiana y de la pantalla de bloqueo, con el frontal de la app.** Android pinta ese reproductor con su propia letra y sus botones; lo que la app controla es la imagen de fondo, y ahora es el frontal: la rejilla de perforaciones según el volumen, los pilotos AIRE / ESPERA y la escala de pilotos del volumen. Verde mientras suena y ámbar tenue en pausa. Con el SoundTouch y con «Este móvil».
+- **1.17.0**: **que se vea qué se puede pulsar** (auditoría de Impeccable sobre capturas del usuario).
+  - Desplegables con forma de tecla: contorno, piloto encendido al abrir y ▾ / ▴. «¿Cómo se restablece mi modelo?», «Si nada de esto funciona…» y «Ajuste fino» ya no parecen títulos.
+  - Ninguna acción es texto suelto: «Añadir», «Probar conexión automática», «Actualizar», «Restaurar emisoras precargadas» y las demás son teclas con contorno, como «Probar ahora».
+  - Elegir una sola opción (emisora del despertador, altavoz, idioma) se marca solo con el piloto; el recuadro queda para elegir varias.
+  - En el despertador, el nombre del altavoz en letra normal y la IP en lectura.
+- **1.18.0**: **«Añadir» más discreto** (auditoría de Impeccable sobre capturas del usuario). En Radio, la tecla «Añadir» pasa a ser una pequeña tecla «+» en ámbar tenue al final del rótulo EMISORAS. En Vincular, «Comprobar» de cada aparato encontrado es una tecla, como la de «Por IP», y el nombre del altavoz va en letra normal con la IP y el método en lectura.
+- **1.19.0**: **el verde, solo para lo que está en marcha** (crítica de Impeccable con el usuario). El verde queda como luz de estado: la emisora y el preset que suenan, la barra de volumen, Stop mientras suena, ON, la pestaña y la opción elegidas. Todas las acciones pasan a tinta, con el rótulo serigrafiado en mayúsculas como ALARMA y MUTE: la principal, rellena en tinta (ABRIR WI-FI, VINCULAR, USAR ESTE ALTAVOZ); las demás, con contorno (COMPROBAR, PROBAR AHORA, REINTENTAR…). La tecla «+» pasa de ámbar a tinta, y los desplegables a tinta con el piloto verde al abrirse.

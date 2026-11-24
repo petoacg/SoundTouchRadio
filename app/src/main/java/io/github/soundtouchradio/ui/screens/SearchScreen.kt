@@ -28,7 +28,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
+import io.github.soundtouchradio.ui.components.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -41,14 +41,14 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedButton
+import io.github.soundtouchradio.ui.components.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.RadioButton
+import io.github.soundtouchradio.ui.components.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import io.github.soundtouchradio.ui.components.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -69,6 +69,7 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.withStyle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.soundtouchradio.data.Station
 import io.github.soundtouchradio.directory.COUNTRIES
@@ -144,8 +145,9 @@ internal fun SearchContent(
             OutlinedTextField(
                 value = text, onValueChange = { text = it }, singleLine = true,
                 placeholder = { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_nombre_de_la_emisora)) },
-                leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
-                trailingIcon = { if (text.isNotEmpty()) IconButton(onClick = { text = ""; run(ui.query.copy(text = "")) }) { Icon(Icons.Filled.Clear, Txt.s(R.string.ui_borrar_2)) } },
+                // Sin lupa ni ✕ (1.15.0): la tecla CLR borra, como en los equipos.
+                trailingIcon = { if (text.isNotEmpty()) io.github.soundtouchradio.ui.components.PanelKey("CLR", onClick = { text = ""; run(ui.query.copy(text = "")) },
+                    description = Txt.s(R.string.ui_borrar_2), modifier = Modifier.padding(end = 6.dp)) },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = { run(ui.query.copy(text = text)) }),
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
@@ -161,12 +163,12 @@ internal fun SearchContent(
                     DropdownMenu(expanded = countryMenu, onDismissRequest = { countryMenu = false }) {
                         COUNTRIES.forEach { (code, name) ->
                             DropdownMenuItem(text = { Text(androidx.compose.ui.res.stringResource(name)) }, onClick = { countryMenu = false; run(ui.query.copy(text = text, country = code)) },
-                                trailingIcon = { if (code == ui.query.country) Icon(Icons.Filled.Check, null) })
+                                trailingIcon = { if (code == ui.query.country) io.github.soundtouchradio.ui.components.SelectedPilot() })
                         }
                     }
                 }
                 FilterChip(selected = ui.query.compatibleOnly, label = { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_solo_compatibles)) },
-                    leadingIcon = if (ui.query.compatibleOnly) ({ Icon(Icons.Filled.Check, null, Modifier.size(FilterChipDefaults.IconSize)) }) else null,
+                    leadingIcon = if (ui.query.compatibleOnly) ({ io.github.soundtouchradio.ui.components.SelectedPilot() }) else null,
                     onClick = { run(ui.query.copy(text = text, compatibleOnly = !ui.query.compatibleOnly)) })
                 Genre.entries.forEach { g ->
                     FilterChip(selected = ui.query.genre == g, label = { Text(androidx.compose.ui.res.stringResource(g.labelRes)) },
@@ -185,7 +187,7 @@ internal fun SearchContent(
                     Text(ui.error, style = MaterialTheme.typography.bodyLarge)
                     Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_comprueba_que_el_movil_tiene),
                         style = MaterialTheme.typography.bodyMedium, color = cs.onSurfaceVariant)
-                    OutlinedButton(onClick = { run(ui.query.copy(text = text)) }) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_reintentar)) }
+                    OutlinedButton(onClick = { run(ui.query.copy(text = text)) }) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_reintentar)).uppercase()) }
                 }
                 ui.searched && ui.results.isEmpty() -> Column(Modifier.padding(16.dp)) {
                     Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_sin_resultados), style = MaterialTheme.typography.titleMedium)
@@ -223,11 +225,15 @@ internal fun SearchContent(
                                 leadingContent = { Box(Modifier.size(24.dp), contentAlignment = Alignment.Center) { if (pilot != null) PilotLight(pilot) } },
                                 headlineContent = { Text(r.name.trim(), maxLines = 1, overflow = TextOverflow.Ellipsis) },
                                 supportingContent = {
-                                    Text(listOfNotNull(r.countrycode.ifBlank { null }, r.codec.ifBlank { null }?.uppercase(),
-                                        if (r.httpsOnly) "https" else null,
-                                        r.bitrate.takeIf { it > 0 }?.let { "$it kbps" }, r.tagList.take(3).joinToString(", ").ifBlank { null })
-                                        .joinToString(" · "), maxLines = 1, overflow = TextOverflow.Ellipsis,
-                                        style = MaterialTheme.typography.bodyMedium.merge(Tabular))
+                                    // Datos en lectura y las etiquetas en letra normal, con « · » estrecho (1.13.0).
+                                    Text(androidx.compose.ui.text.buildAnnotatedString {
+                                        append(io.github.soundtouchradio.ui.components.readoutJoin(listOfNotNull(r.countrycode.ifBlank { null }, r.codec.ifBlank { null }?.uppercase(),
+                                            if (r.httpsOnly) "https" else null, r.bitrate.takeIf { it > 0 }?.let { "$it\u00A0kbps" })))
+                                        r.tagList.take(3).joinToString(", ").ifBlank { null }?.let { tags ->
+                                            withStyle(androidx.compose.ui.text.SpanStyle(fontFamily = androidx.compose.ui.text.font.FontFamily.Default)) { append(" · $tags") }
+                                        }
+                                    }, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                                        style = MaterialTheme.typography.bodySmall.merge(Tabular))
                                 },
                                 trailingContent = if (saved) ({ Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_guardada), style = MaterialTheme.typography.labelMedium, color = cs.onSurfaceVariant) }) else null,
                             )
@@ -241,8 +247,8 @@ internal fun SearchContent(
                                     modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite })
                                 Text(r.streamUrl, style = MaterialTheme.typography.bodySmall, color = cs.onSurfaceVariant, maxLines = 2, overflow = TextOverflow.Ellipsis)
                                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                    OutlinedButton(onClick = { onTry(r) }) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_probar_en_el_altavoz_2)) }
-                                    Button(onClick = { saving = r }) { Text(if (saved) Txt.s(R.string.ui_poner_en_tecla) else Txt.s(R.string.ui_guardar_4)) }
+                                    OutlinedButton(onClick = { onTry(r) }) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_probar_en_el_altavoz_2)).uppercase()) }
+                                    Button(onClick = { saving = r }) { Text((if (saved) Txt.s(R.string.ui_poner_en_tecla) else Txt.s(R.string.ui_guardar_4)).uppercase()) }
                                 }
                             }
                         }
@@ -282,9 +288,9 @@ private fun SaveSheet(r: RbStation, presets: List<Station?>, failed: Boolean, on
                 }
             }
             Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp), horizontalArrangement = Arrangement.End) {
-                TextButton(onClick = onDismiss) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_cancelar_4)) }
+                TextButton(onClick = onDismiss) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_cancelar_4)).uppercase()) }
                 Spacer(Modifier.width(8.dp))
-                Button(onClick = { onSave(slot) }) { Text(if (failed) Txt.s(R.string.ui_guardar_igualmente) else Txt.s(R.string.ui_guardar_4)) }
+                Button(onClick = { onSave(slot) }) { Text((if (failed) Txt.s(R.string.ui_guardar_igualmente) else Txt.s(R.string.ui_guardar_4)).uppercase()) }
             }
         }
     }

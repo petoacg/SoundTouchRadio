@@ -87,6 +87,8 @@ class PhonePlayer(
             override fun onAudioDevicesRemoved(removed: Array<out AudioDeviceInfo>?) = refreshOutput()
         }, null)
         refreshOutput()
+        // También en reposo (1.13.0): el móvil siempre tiene un volumen, y el panel lo muestra aunque no haya emisora.
+        refreshVolume()
         // Volumen multimedia del móvil (0–100 para el panel) y datos móviles, cada segundo mientras haya algo cargado.
         scope.launch { while (true) { if (_state.value.stationId != null) refreshVolume(); delay(1_000) } }
     }
@@ -105,7 +107,12 @@ class PhonePlayer(
             val url = resolved.probe?.takeIf { it.reachable }?.finalUrl ?: resolved.streamUrl
             _state.update { it.copy(phoneUrl = url) }
             player.setMediaItem(MediaItem.Builder().setUri(url)
-                .setMediaMetadata(MediaMetadata.Builder().setTitle(req.name).setArtist(Txt.s(io.github.soundtouchradio.R.string.ui_este_movil)).build()).build())
+                .setMediaMetadata(MediaMetadata.Builder().setTitle(req.name).setArtist(Txt.s(io.github.soundtouchradio.R.string.ui_este_movil))
+                    // Carátula del frontal (1.16.0) para el reproductor de la persiana y la pantalla de bloqueo.
+                    .setArtworkData(java.io.ByteArrayOutputStream().also { out ->
+                        PanelArt.render(app, onAir = true, volume = _state.value.volume).compress(android.graphics.Bitmap.CompressFormat.PNG, 100, out)
+                    }.toByteArray(), MediaMetadata.PICTURE_TYPE_FRONT_COVER)
+                    .build()).build())
             player.prepare()
             player.play()
             refreshVolume()

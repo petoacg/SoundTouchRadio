@@ -71,8 +71,23 @@ private val BraunShapes = Shapes(
     extraLarge = RoundedCornerShape(24.dp),
 )
 
-/** Cifras tabulares para IP, kbps, porcentajes y tiempos. */
-val Tabular = TextStyle(fontFeatureSettings = "tnum")
+
+/**
+ * Tipografía de lectura (1.12.0): IBM Plex Mono, incluida en la app (SIL OFL 1.1, docs/LICENCIA-IBM-Plex-Mono.txt).
+ * Solo para lo que se mide: números de canal y preset, códec y kbps, volumen, horas, IP. Los nombres siguen en Roboto.
+ */
+val PlexMono = androidx.compose.ui.text.font.FontFamily(
+    androidx.compose.ui.text.font.Font(io.github.soundtouchradio.R.font.ibm_plex_mono_regular, androidx.compose.ui.text.font.FontWeight.Normal),
+    androidx.compose.ui.text.font.Font(io.github.soundtouchradio.R.font.ibm_plex_mono_medium, androidx.compose.ui.text.font.FontWeight.Medium),
+    androidx.compose.ui.text.font.Font(io.github.soundtouchradio.R.font.ibm_plex_mono_semibold, androidx.compose.ui.text.font.FontWeight.SemiBold),
+)
+val Readout = TextStyle(fontFamily = PlexMono, fontFeatureSettings = "tnum")
+
+/** Cifras de lectura en toda la app (1.13.0): IP, kbps, porcentajes, tiempos y números de canal, en Plex Mono. */
+val Tabular = Readout
+
+/** Frases con cifras (avisos, horas dentro de una frase): Roboto con cifras tabulares, sin pasar a mono. */
+val ProseNumbers = TextStyle(fontFeatureSettings = "tnum")
 
 @Composable
 fun SoundTouchRadioTheme(dynamicColor: Boolean, content: @Composable () -> Unit) {

@@ -22,8 +22,8 @@ android {
         applicationId = "io.github.soundtouchradio"
         minSdk = 26
         targetSdk = 35
-        versionCode = 32
-        versionName = "1.11.1"
+        versionCode = 40
+        versionName = "1.19.0"
     }
 
     signingConfigs {

@@ -39,16 +39,16 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.RadioButton
+import io.github.soundtouchradio.ui.components.OutlinedButton
+import io.github.soundtouchradio.ui.components.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
+import io.github.soundtouchradio.ui.components.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import io.github.soundtouchradio.ui.components.TextButton
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -70,6 +70,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.withStyle
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.soundtouchradio.data.AlarmSettings
@@ -200,7 +201,7 @@ internal fun AlarmContent(
                         enabled && isOnce -> Txt.s(R.string.ui_esa_hora_ya_ha_pasado)
                         else -> Txt.s(R.string.ui_desactivada_toca_la_hora_para)
                     },
-                    style = MaterialTheme.typography.bodyMedium.merge(Tabular), color = cs.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodyMedium.merge(io.github.soundtouchradio.ui.theme.ProseNumbers), color = cs.onSurfaceVariant,
                 )
             }
 
@@ -211,7 +212,7 @@ internal fun AlarmContent(
                         color = cs.onTertiaryContainer, style = MaterialTheme.typography.bodyMedium)
                     if (Build.VERSION.SDK_INT >= 31) TextButton(onClick = {
                         ctx.startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, android.net.Uri.parse("package:${ctx.packageName}")))
-                    }) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_permitir_alarmas_exactas)) }
+                    }) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_permitir_alarmas_exactas)).uppercase()) }
                 }
             }
 
@@ -241,7 +242,6 @@ internal fun AlarmContent(
                 ListItem(
                     modifier = Modifier.clickable(onClickLabel = Txt.s(R.string.ui_cambiar_la_fecha)) { pickDate = true },
                     colors = ListItemDefaults.colors(containerColor = cs.surface),
-                    leadingContent = { Icon(Icons.Filled.Event, contentDescription = null, tint = cs.onSurfaceVariant) },
                     headlineContent = { Text(AlarmPlan.dateLabel(date, nowZ.toLocalDate()).replaceFirstChar { it.uppercase() }) },
                     supportingContent = { Text(if (a.enabled) Txt.s(R.string.ui_el_despertador_semanal_sigue_igual) else Txt.s(R.string.ui_se_apaga_sola_despues_de)) },
                 )
@@ -267,8 +267,8 @@ internal fun AlarmContent(
             val volume = if (isOnce) o.volume else a.volume
             val fadeIn = if (isOnce) o.fadeIn else a.fadeIn
             Row(Modifier.padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
-                Slider(value = volume.toFloat(), onValueChange = { v -> if (isOnce) saveO(o.copy(volume = v.toInt())) else save(a.copy(volume = v.toInt())) },
-                    valueRange = 1f..60f, modifier = Modifier.weight(1f).semantics { contentDescription = Txt.s(R.string.ui_volumen_al_despertar) })
+                io.github.soundtouchradio.ui.components.FaderSlider(value = volume.toFloat(), onValueChange = { v -> if (isOnce) saveO(o.copy(volume = v.toInt())) else save(a.copy(volume = v.toInt())) },
+                    valueRange = 1f..60f, tickCount = 6, modifier = Modifier.weight(1f).semantics { contentDescription = Txt.s(R.string.ui_volumen_al_despertar) })
                 Text("$volume", style = MaterialTheme.typography.labelLarge.merge(Tabular), color = cs.onSurfaceVariant,
                     modifier = Modifier.widthIn(min = 32.dp).padding(start = 8.dp))
             }
@@ -281,11 +281,15 @@ internal fun AlarmContent(
             )
 
             SectionTitle(Txt.s(R.string.ui_altavoz))
-            Text(speaker?.let { "${it.name} · ${it.host}" } ?: Txt.s(R.string.ui_ningun_altavoz_vinculado_2),
+            Text(speaker?.let { sp -> androidx.compose.ui.text.buildAnnotatedString {
+                // Lo que se nombra en Roboto; lo que se mide (la IP) en lectura (1.17.0).
+                withStyle(androidx.compose.ui.text.SpanStyle(fontFamily = androidx.compose.ui.text.font.FontFamily.Default)) { append(sp.name); append(" · ") }
+                append(sp.host)
+            } } ?: androidx.compose.ui.text.AnnotatedString(Txt.s(R.string.ui_ningun_altavoz_vinculado_2)),
                 style = MaterialTheme.typography.bodyLarge.merge(Tabular), modifier = Modifier.padding(horizontal = 16.dp))
 
             Row(Modifier.padding(16.dp)) {
-                OutlinedButton(onClick = { onTest(isOnce) }, enabled = speaker != null) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_probar_ahora)) }
+                OutlinedButton(onClick = { onTest(isOnce) }, enabled = speaker != null) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_probar_ahora)).uppercase()) }
             }
             Text(
                 Txt.s(R.string.ui_funciona_desde_este_movil_tiene) +
@@ -304,8 +308,8 @@ internal fun AlarmContent(
                 if (isOnce) saveO(o.copy(hour = state.hour, minute = state.minute), announce = o.enabled)
                 else save(a.copy(hour = state.hour, minute = state.minute))
                 pickTime = false
-            }) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_aceptar)) } },
-            dismissButton = { TextButton(onClick = { pickTime = false }) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_cancelar)) } },
+            }) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_aceptar)).uppercase()) } },
+            dismissButton = { TextButton(onClick = { pickTime = false }) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_cancelar)).uppercase()) } },
             text = { TimePicker(state = state) },
         )
     }
@@ -325,8 +329,8 @@ internal fun AlarmContent(
             confirmButton = { TextButton(onClick = {
                 state.selectedDateMillis?.let { saveO(o.copy(date = LocalDate.ofEpochDay(it / 86_400_000L).toString()), announce = o.enabled) }
                 pickDate = false
-            }) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_aceptar_2)) } },
-            dismissButton = { TextButton(onClick = { pickDate = false }) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_cancelar_2)) } },
+            }) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_aceptar_2)).uppercase()) } },
+            dismissButton = { TextButton(onClick = { pickDate = false }) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_cancelar_2)).uppercase()) } },
         ) { DatePicker(state = state, showModeToggle = false) }
     }
 }
@@ -339,7 +343,8 @@ private fun AlarmTab(label: String, armed: Boolean, selected: Boolean, onClick: 
         modifier = Modifier.semantics { stateDescription = if (armed) Txt.s(R.string.ui_activada) else Txt.s(R.string.ui_desactivada) },
         text = {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                if (armed) { Icon(Icons.Filled.Alarm, contentDescription = null, modifier = Modifier.size(16.dp)); Spacer(Modifier.width(6.dp)) }
+                // Piloto de armado en lugar del dibujo de reloj (1.15.0): encendido si esa alarma está activada.
+                io.github.soundtouchradio.ui.components.PilotSquare(armed); Spacer(Modifier.width(6.dp))
                 Text(label)
             }
         })

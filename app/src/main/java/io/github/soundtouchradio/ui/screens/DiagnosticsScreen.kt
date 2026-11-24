@@ -24,12 +24,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
+import io.github.soundtouchradio.ui.components.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
+import io.github.soundtouchradio.ui.components.OutlinedButton
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
@@ -39,7 +39,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import io.github.soundtouchradio.ui.components.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -105,7 +105,7 @@ fun DiagnosticsScreen(vm: AppViewModel, snackbar: SnackbarHostState, onBack: () 
                     if (state.phoneOnCellular) Field(Txt.s(R.string.ui_diag_red), Txt.s(R.string.ui_usando_datos_moviles))
                 }
                 TextButton(onClick = { showSpeaker = !showSpeaker }, modifier = Modifier.padding(horizontal = 8.dp)) {
-                    Text(if (showSpeaker) Txt.s(R.string.ui_diag_ocultar_altavoz) else Txt.s(R.string.ui_diag_ver_altavoz))
+                    Text((if (showSpeaker) Txt.s(R.string.ui_diag_ocultar_altavoz) else Txt.s(R.string.ui_diag_ver_altavoz)).uppercase())
                 }
             }
             if (!onPhone || showSpeaker) SectionTitle(Txt.s(R.string.ui_altavoz))
@@ -143,7 +143,7 @@ fun DiagnosticsScreen(vm: AppViewModel, snackbar: SnackbarHostState, onBack: () 
                     clipboard.setText(androidx.compose.ui.text.AnnotatedString(io.github.soundtouchradio.ui.DiagnosticsReport.build(Txt.s(R.string.ui_soundtouch_radio_2, io.github.soundtouchradio.BuildConfigShim.VERSION), lines, logLines)))
                     vm.notify(T.s(io.github.soundtouchradio.R.string.ui_informe_copiado))
                 }, modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-                    Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_copiar_informe))
+                    Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_copiar_informe)).uppercase())
                 }
                 Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_copiar_informe_detalle),
                     style = MaterialTheme.typography.bodySmall, color = cs.onSurfaceVariant, modifier = Modifier.padding(horizontal = 16.dp))
@@ -168,7 +168,7 @@ fun DiagnosticsScreen(vm: AppViewModel, snackbar: SnackbarHostState, onBack: () 
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp))
             Row(Modifier.padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
                 OutlinedButton(onClick = { vm.testHttpsRedirect(bridgeUrl) }, enabled = !bridgeRunning && speaker != null) {
-                    Text(Txt.s(R.string.ui_bridge_button))
+                    Text((Txt.s(R.string.ui_bridge_button)).uppercase())
                 }
                 if (bridgeRunning) CircularProgressIndicator(Modifier.padding(start = 16.dp).size(24.dp), strokeWidth = 2.dp)
             }
@@ -179,8 +179,8 @@ fun DiagnosticsScreen(vm: AppViewModel, snackbar: SnackbarHostState, onBack: () 
                     false -> Txt.s(R.string.ui_bridge_state_off)
                     null -> Txt.s(R.string.ui_bridge_state_none)
                 }, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
-                if (settingsNow.httpsBridge == false) TextButton(onClick = { vm.setHttpsBridge(null) }) { Text(Txt.s(R.string.ui_bridge_enable)) }
-                else TextButton(onClick = { vm.setHttpsBridge(false) }) { Text(Txt.s(R.string.ui_bridge_disable)) }
+                if (settingsNow.httpsBridge == false) TextButton(onClick = { vm.setHttpsBridge(null) }) { Text((Txt.s(R.string.ui_bridge_enable)).uppercase()) }
+                else TextButton(onClick = { vm.setHttpsBridge(false) }) { Text((Txt.s(R.string.ui_bridge_disable)).uppercase()) }
             }
 
             SectionTitle(Txt.s(R.string.ui_banco_de_pruebas_de_formatos))
@@ -192,19 +192,19 @@ fun DiagnosticsScreen(vm: AppViewModel, snackbar: SnackbarHostState, onBack: () 
                 modifier = Modifier.fillMaxWidth().heightIn(min = 120.dp).padding(horizontal = 16.dp, vertical = 8.dp),
             )
             Row(Modifier.padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                if (bench.running) OutlinedButton(onClick = vm::cancelBench) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_cancelar_3)) }
-                else FilledTonalButton(onClick = { vm.runBench(urls) }, enabled = speaker != null) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_probar_en_el_altavoz)) }
+                if (bench.running) OutlinedButton(onClick = vm::cancelBench) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_cancelar_3)).uppercase()) }
+                else FilledTonalButton(onClick = { vm.runBench(urls) }, enabled = speaker != null) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_probar_en_el_altavoz)).uppercase()) }
                 if (bench.rows.isNotEmpty() && !bench.running) {
-                    OutlinedButton(onClick = { saveMd.launch("pruebas-soundtouch.md") }) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_exportar_md)) }
+                    OutlinedButton(onClick = { saveMd.launch("pruebas-soundtouch.md") }) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_exportar_md)).uppercase()) }
                     TextButton(onClick = {
                         (ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(ClipData.newPlainText(Txt.s(R.string.ui_pruebas), vm.benchMarkdown()))
                         vm.notify(Txt.s(R.string.ui_copiado_como_markdown))
-                    }) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_copiar)) }
+                    }) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_copiar)).uppercase()) }
                 }
             }
             if (bench.running) {
                 LinearProgressIndicator(progress = { bench.current / bench.total.coerceAtLeast(1).toFloat() }, modifier = Modifier.fillMaxWidth().padding(16.dp))
-                Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_probando_de, (bench.current).toString(), (bench.total).toString()), style = MaterialTheme.typography.bodyMedium.merge(Tabular), modifier = Modifier.padding(horizontal = 16.dp))
+                Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_probando_de, (bench.current).toString(), (bench.total).toString()), style = MaterialTheme.typography.bodyMedium.merge(io.github.soundtouchradio.ui.theme.ProseNumbers), modifier = Modifier.padding(horizontal = 16.dp))
             }
             bench.rows.forEach { r ->
                 Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp)) {
@@ -226,7 +226,7 @@ fun DiagnosticsScreen(vm: AppViewModel, snackbar: SnackbarHostState, onBack: () 
                     Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_ms, (e.method).toString(), (e.target).toString(), (e.outcome).toString(), (e.durationMs).toString()), style = MaterialTheme.typography.bodySmall.merge(Tabular))
                 }
             }
-            TextButton(onClick = { vm.log.clear() }, modifier = Modifier.padding(horizontal = 8.dp)) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_vaciar_registro)) }
+            TextButton(onClick = { vm.log.clear() }, modifier = Modifier.padding(horizontal = 8.dp)) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_vaciar_registro)).uppercase()) }
         }
     }
 }

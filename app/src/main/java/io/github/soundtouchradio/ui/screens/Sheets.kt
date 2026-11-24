@@ -18,9 +18,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PhoneAndroid
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Checkbox
+import io.github.soundtouchradio.ui.components.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
+import io.github.soundtouchradio.ui.components.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
@@ -30,10 +30,10 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import io.github.soundtouchradio.ui.components.NoSheetInsets
 import io.github.soundtouchradio.ui.components.sheetBottomInset
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.RadioButton
+import io.github.soundtouchradio.ui.components.OutlinedButton
+import io.github.soundtouchradio.ui.components.RadioButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import io.github.soundtouchradio.ui.components.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -72,9 +72,8 @@ fun SpeakerSheet(vm: AppViewModel, speakers: List<SpeakerRecord>, active: Speake
                     headlineContent = { Text(s.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
                     supportingContent = { Text("${s.type} · ${s.host}", style = MaterialTheme.typography.bodyMedium.merge(Tabular)) },
                     trailingContent = {
-                        androidx.compose.material3.IconButton(onClick = { renaming = s }) {
-                            Icon(androidx.compose.material.icons.Icons.Filled.Edit, contentDescription = "Renombrar ${s.name}")
-                        }
+                        // Tecla rotulada en lugar del lápiz (1.15.0).
+                        io.github.soundtouchradio.ui.components.PanelKey(Txt.s(R.string.ui_tecla_nombre), onClick = { renaming = s }, description = "Renombrar ${s.name}")
                     },
                 )
             }
@@ -86,11 +85,10 @@ fun SpeakerSheet(vm: AppViewModel, speakers: List<SpeakerRecord>, active: Speake
                 headlineContent = { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_este_movil)) },
                 supportingContent = { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_este_movil_detalle,
                     if (onPhone) phoneState.phoneOutput ?: "—" else androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_salida_altavoz_movil))) },
-                trailingContent = { Icon(androidx.compose.material.icons.Icons.Filled.PhoneAndroid, contentDescription = null, tint = cs.onSurfaceVariant) },
             )
             renaming?.let { sp -> RenameDialog(sp, onDismiss = { renaming = null }) { name, done -> vm.renameSpeaker(sp.id, name, done) } }
             TextButton(onClick = onLink, modifier = Modifier.padding(horizontal = 12.dp)) {
-                Icon(Icons.Filled.Add, null); androidx.compose.foundation.layout.Spacer(Modifier.width(8.dp)); Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_vincular_otro_altavoz))
+                Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_vincular_otro_altavoz)).uppercase())
             }
 
             if (settings.multiroomExperimental && active != null && speakers.size > 1) {
@@ -113,9 +111,9 @@ fun SpeakerSheet(vm: AppViewModel, speakers: List<SpeakerRecord>, active: Speake
                     )
                 }
                 Row(Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                    if ((zone?.members?.size ?: 0) > 1) OutlinedButton(onClick = vm::dissolveZone) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_deshacer_grupo)) }
+                    if ((zone?.members?.size ?: 0) > 1) OutlinedButton(onClick = vm::dissolveZone) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_deshacer_grupo)).uppercase()) }
                     androidx.compose.foundation.layout.Spacer(Modifier.weight(1f))
-                    FilledTonalButton(onClick = { vm.createZone(chosen.toList()); chosen.clear() }, enabled = chosen.isNotEmpty()) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_agrupar)) }
+                    FilledTonalButton(onClick = { vm.createZone(chosen.toList()); chosen.clear() }, enabled = chosen.isNotEmpty()) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_agrupar)).uppercase()) }
                 }
             }
         }
@@ -143,7 +141,7 @@ fun PresetSheet(slot: Int, current: Station?, stations: List<Station>, onDismiss
                 if (current != null) item {
                     HorizontalDivider(Modifier.padding(vertical = 4.dp))
                     TextButton(onClick = { onAssign(null) }, modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
-                        Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_vaciar_preset, (slot + 1).toString()), color = cs.error)
+                        Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_vaciar_preset, (slot + 1).toString())).uppercase(), color = cs.error)
                     }
                 }
             }
@@ -194,8 +192,8 @@ private fun RenameDialog(sp: SpeakerRecord, onDismiss: () -> Unit, onSave: (Stri
             TextButton(enabled = !busy && io.github.soundtouchradio.soundtouch.SoundTouchXml.validateName(name) == null && name.trim() != sp.name, onClick = {
                 busy = true
                 onSave(name) { e -> busy = false; if (e == null) onDismiss() else error = e }
-            }) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_guardar_2)) }
+            }) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_guardar_2)).uppercase()) }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_cancelar_5)) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_cancelar_5)).uppercase()) } },
     )
 }

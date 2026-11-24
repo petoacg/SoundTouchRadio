@@ -17,18 +17,18 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
+import io.github.soundtouchradio.ui.components.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
+import io.github.soundtouchradio.ui.components.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import io.github.soundtouchradio.ui.components.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -71,8 +71,8 @@ fun StationEditorScreen(vm: AppViewModel, existing: Station?, snackbar: Snackbar
         onDismissRequest = { confirmDiscard = false },
         title = { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_descartar_los_cambios)) },
         text = { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_la_emisora_no_se_ha)) },
-        confirmButton = { TextButton(onClick = { confirmDiscard = false; onDone() }) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_descartar)) } },
-        dismissButton = { TextButton(onClick = { confirmDiscard = false }) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_seguir_editando)) } },
+        confirmButton = { TextButton(onClick = { confirmDiscard = false; onDone() }) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_descartar)).uppercase()) } },
+        dismissButton = { TextButton(onClick = { confirmDiscard = false }) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_seguir_editando)).uppercase()) } },
     )
 
     val validation = UrlRules.validate(url)
@@ -102,7 +102,7 @@ fun StationEditorScreen(vm: AppViewModel, existing: Station?, snackbar: Snackbar
             TopAppBar(
                 title = { Text(if (existing == null) Txt.s(R.string.ui_nueva_emisora) else Txt.s(R.string.ui_editar_emisora)) },
                 navigationIcon = { IconButton(onClick = ::leave) { Icon(Icons.AutoMirrored.Filled.ArrowBack, Txt.s(R.string.ui_volver)) } },
-                actions = { TextButton(onClick = ::save, enabled = canSave) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_guardar_3)) } },
+                actions = { TextButton(onClick = ::save, enabled = canSave) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_guardar_3)).uppercase()) } },
             )
         },
     ) { padding ->
@@ -147,11 +147,11 @@ fun StationEditorScreen(vm: AppViewModel, existing: Station?, snackbar: Snackbar
             Row(verticalAlignment = Alignment.CenterVertically) {
                 OutlinedButton(enabled = canSave && !probing, onClick = {
                     scope.launch { probing = true; probe = vm.probe((validation as UrlRules.Validation.Ok).url); probing = false }
-                }) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_comprobar_stream)) }
+                }) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_comprobar_stream)).uppercase()) }
                 // Probar sin guardar (1.9.5): el aviso de https es orientativo; lo que manda es si suena en el altavoz.
-                androidx.compose.material3.TextButton(enabled = canSave, onClick = {
+                io.github.soundtouchradio.ui.components.TextButton(enabled = canSave, onClick = {
                     vm.play(io.github.soundtouchradio.data.Station(id = "editor-trial", name = name.ifBlank { "Prueba" }, url = (validation as UrlRules.Validation.Ok).url))
-                }, modifier = Modifier.padding(start = 8.dp)) { Text(androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_probar_en_el_altavoz_editor)) }
+                }, modifier = Modifier.padding(start = 8.dp)) { Text((androidx.compose.ui.res.stringResource(io.github.soundtouchradio.R.string.ui_probar_en_el_altavoz_editor)).uppercase()) }
                 if (probing) CircularProgressIndicator(Modifier.padding(start = 16.dp).padding(4.dp), strokeWidth = 2.dp)
             }
             probe?.let { p ->
@@ -176,7 +176,7 @@ private fun Notice(bg: Color, fg: Color, text: String, action: Pair<String, () -
             Text(text, color = fg, style = MaterialTheme.typography.bodyMedium)
             action?.let { (label, onClick) ->
                 Row(Modifier.fillMaxWidth().padding(top = 8.dp), horizontalArrangement = Arrangement.End) {
-                    FilledTonalButton(onClick = onClick) { Text(label) }
+                    FilledTonalButton(onClick = onClick) { Text((label).uppercase()) }
                 }
             }
         }
