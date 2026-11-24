@@ -6,9 +6,9 @@ Free Android app (MIT licence) to play internet radio on a **Bose SoundTouch** o
 
 | Radio | This phone | Sound | Alarm clock | Station search |
 |---|---|---|---|---|
-| ![](docs/capturas/en-radio-1.11.png) | ![](docs/capturas/panel-este-movil-1.10.png) | ![](docs/capturas/en-sound-1.11.png) | ![](docs/capturas/en-alarm-1.11.png) | ![](docs/capturas/oscuro-1.7-search.png) |
+| ![](docs/capturas/en-radio-1.19.png) | ![](docs/capturas/en-phone-1.19.png) | ![](docs/capturas/en-sound-1.19.png) | ![](docs/capturas/en-alarm-1.19.png) | ![](docs/capturas/en-search-1.19.png) |
 
-<sub>Screenshots rendered from the app's real components with sample data (the "This phone" and search screenshots are from the Spanish UI). The app is available in **Spanish and English**: it follows the phone's language, and on Android 13+ you can pick it in Settings → Language.</sub>
+<sub>Version 1.19.0. Screenshots rendered from the app's real components with sample data. The app is available in **English and Spanish**: it follows the phone's language, and on Android 13+ you can pick it in Settings → Appearance → Language.</sub>
 
 ## Features
 - **Radio on the SoundTouch:** the speaker streams the station by itself; you can close the app and it keeps playing. A station only counts as playing once the speaker confirms it.

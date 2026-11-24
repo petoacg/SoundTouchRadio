@@ -6,9 +6,9 @@ App Android libre (licencia MIT) para escuchar radio en un **Bose SoundTouch** p
 
 | Radio | Este móvil | Sonido | Despertador | Buscar emisoras |
 |---|---|---|---|---|
-| ![](docs/capturas/oscuro-radio-1.9.png) | ![](docs/capturas/panel-este-movil-1.10.png) | ![](docs/capturas/sonido-1.10.3.png) | ![](docs/capturas/oscuro-1.7-alarmOnce.png) | ![](docs/capturas/oscuro-1.7-search.png) |
+| ![](docs/capturas/es-radio-1.19.png) | ![](docs/capturas/es-phone-1.19.png) | ![](docs/capturas/es-sound-1.19.png) | ![](docs/capturas/es-alarm-1.19.png) | ![](docs/capturas/es-search-1.19.png) |
 
-<sub>Capturas renderizadas con los componentes reales de la app y datos de ejemplo ([detalles](docs/capturas/LEEME.md)).</sub>
+<sub>Versión 1.19.0. Capturas renderizadas con los componentes reales de la app y datos de ejemplo ([detalles](docs/capturas/LEEME.md)).</sub>
 
 ## Qué hace
 - **Radio en el SoundTouch:** el altavoz descarga la emisora él solo; puedes cerrar la app y sigue sonando. La app solo da por buena una emisora cuando el altavoz confirma que suena.

@@ -7,3 +7,9 @@ la IP y el firmware son ficticios. Perfil de pantalla: Pixel 6 (similar al Pixel
 
 No son capturas de un dispositivo real: el entorno de desarrollo no tenía emulador (sin KVM).
 Paparazzi se usó solo para esta revisión y no forma parte del proyecto entregado.
+
+## Juego actual (1.19.0)
+
+Las del README, en español (`es-*-1.19.png`, para `README.es.md`) y en inglés (`en-*-1.19.png`, para `README.md`):
+Radio con el SoundTouch sonando, Radio con «Este móvil», la hoja «Sonido», el Despertador y Buscar emisoras.
+Tema oscuro. Las anteriores están en `historial/`.
